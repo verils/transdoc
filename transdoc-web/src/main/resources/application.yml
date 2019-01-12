@@ -1,0 +1,10 @@
+spring:
+  servlet:
+    multipart:
+      max-file-size: -1
+      max-request-size: -1
+transdoc:
+  ws:
+    fileupload:
+      temp-dir: ./temp
+      max-file-life: 900000
