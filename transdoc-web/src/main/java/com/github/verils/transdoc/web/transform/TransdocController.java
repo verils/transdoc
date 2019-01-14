@@ -28,11 +28,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
-import com.github.verils.transdoc.core.Convertor;
-import com.github.verils.transdoc.core.MarkdownConverter;
-import com.github.verils.transdoc.core.WordParser;
-import com.github.verils.transdoc.core.model.Article;
-import com.github.verils.transdoc.core.model.Picture;
+import com.github.verils.transdoc.core.old.Convertor;
+import com.github.verils.transdoc.core.old.MarkdownConverter;
+import com.github.verils.transdoc.core.old.WordParserOld;
+import com.github.verils.transdoc.core.old.model.Article;
+import com.github.verils.transdoc.core.old.model.Picture;
 import com.github.verils.transdoc.web.web.Response;
 
 @CrossOrigin
@@ -50,7 +50,7 @@ public class TransdocController {
 		String pureFilename = getPureFilename(filename);
 		LOGGER.info("文件上传成功: {}", filename);
 
-		WordParser parser = WordParser.prepare(file.getInputStream());
+		WordParserOld parser = WordParserOld.prepare(file.getInputStream());
 		parser.setSavePictures(true);
 		Article article = parser.parse();
 		List<Picture> pictures = article.getPictures();
@@ -104,7 +104,7 @@ public class TransdocController {
 				String filename = file.getOriginalFilename();
 				String pureFilename = getPureFilename(filename);
 
-				WordParser parser = WordParser.prepare(file.getInputStream());
+				WordParserOld parser = WordParserOld.prepare(file.getInputStream());
 				parser.setSavePictures(true);
 				Article article = parser.parse();
 				List<Picture> pictures = article.getPictures();

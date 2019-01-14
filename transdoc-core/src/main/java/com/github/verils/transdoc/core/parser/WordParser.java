@@ -1,19 +1,18 @@
-package com.github.verils.transdoc.core;
+package com.github.verils.transdoc.core.parser;
 
-import com.github.verils.transdoc.core.model.Article;
+import com.github.verils.transdoc.core.old.model.Article;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 public abstract class WordParser {
 
-    public static WordParser parse(InputStream input) {
-        return null;
-    }
-
-    private final InputStream source;
-
-    WordParser(InputStream source) {
-        this.source = source;
+    public static WordParser parse(InputStream input) throws IOException {
+        try {
+            return new DocParser(input);
+        } catch (IllegalArgumentException e) {
+            return new DocxParser(input);
+        }
     }
 
     public abstract Article getArticle();

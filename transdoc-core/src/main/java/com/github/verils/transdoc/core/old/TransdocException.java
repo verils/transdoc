@@ -1,4 +1,4 @@
-package com.github.verils.transdoc.core;
+package com.github.verils.transdoc.core.old;
 
 public class TransdocException extends RuntimeException {
 	private static final long serialVersionUID = -7103413496472730725L;

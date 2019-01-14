@@ -1,4 +1,4 @@
-package com.github.verils.transdoc.core;
+package com.github.verils.transdoc.core.old;
 
 import com.github.verils.transdoc.core.model.*;
 
@@ -7,6 +7,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
+import com.github.verils.transdoc.core.old.model.*;
+import com.github.verils.transdoc.core.old.model.Article;
+import com.github.verils.transdoc.core.old.model.Part;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.model.PicturesTable;
 import org.apache.poi.hwpf.usermodel.CharacterRun;

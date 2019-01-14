@@ -1,4 +1,4 @@
-package com.github.verils.transdoc.core;
+package com.github.verils.transdoc.core.old;
 
 public class WordParsingException extends TransdocException {
 	private static final long serialVersionUID = -532689023986569011L;

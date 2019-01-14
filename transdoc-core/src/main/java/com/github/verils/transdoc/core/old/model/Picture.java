@@ -1,4 +1,4 @@
-package com.github.verils.transdoc.core.model;
+package com.github.verils.transdoc.core.old.model;
 
 import java.io.IOException;
 import java.io.OutputStream;

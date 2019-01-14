@@ -1,6 +1,4 @@
-package com.github.verils.transdoc.core.parser;
-
-import com.github.verils.transdoc.core.model.Part;
+package com.github.verils.transdoc.core.model;
 
 public class TitlePart extends Part {
 

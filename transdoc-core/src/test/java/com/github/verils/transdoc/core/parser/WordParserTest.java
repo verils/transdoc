@@ -1,42 +1,32 @@
-package com.github.verils.transdoc.core;
+package com.github.verils.transdoc.core.parser;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-
-import com.github.verils.transdoc.core.model.Article;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.github.verils.transdoc.core.old.WordParserOld;
-import com.github.verils.transdoc.core.parser.WordParser;
+import org.junit.Ignore;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class WordParserTest {
 
-	@Test
-	public void testParse() {
-		InputStream input = WordParserTest.class.getResourceAsStream("/test.doc");
-		WordParser parser = WordParser.parse(input);
-		Article article = parser.getArticle();
-	}
+    @Test
+    public void testParseIllegalDoc() throws IOException {
+        InputStream input = WordParserTest.class.getResourceAsStream("/test");
+        WordParser parser = WordParser.parse(input);
+    }
 
-	@Test
-	public void testPrepareForDoc() {
-		doParse("/test.doc");
-	}
+    @Test
+    public void testParseDoc() throws IOException {
+        InputStream input = WordParserTest.class.getResourceAsStream("/test.doc");
+        WordParser parser = WordParser.parse(input);
+        assertTrue(parser instanceof DocParser);
+    }
 
-	@Test
-	public void testPrepareForDocx() {
-		doParse("/test.docx");
-	}
-
-	private void doParse(String resource) {
-		try {
-			WordParserOld parser = WordParserOld.prepare(WordParserTest.class.getResourceAsStream(resource));
-			Article article = parser.parse();
-			assertNotNull(article);
-		} catch (IOException e) {
-			fail(e.getMessage());
-		}
-	}
+    @Test
+    public void testParseDocx() throws IOException {
+        InputStream input = WordParserTest.class.getResourceAsStream("/test.docx");
+        WordParser parser = WordParser.parse(input);
+        assertTrue(parser instanceof DocxParser);
+    }
 }

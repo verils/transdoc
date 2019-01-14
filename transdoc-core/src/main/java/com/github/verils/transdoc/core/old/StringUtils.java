@@ -1,4 +1,4 @@
-package com.github.verils.transdoc.core;
+package com.github.verils.transdoc.core.old;
 
 public class StringUtils {
 	private static final char WHITE_SPACE_CHAR = ' ';

@@ -8,11 +8,11 @@ import java.nio.file.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.verils.transdoc.core.Convertor;
-import com.github.verils.transdoc.core.MarkdownConverter;
-import com.github.verils.transdoc.core.WordParser;
-import com.github.verils.transdoc.core.model.Article;
-import com.github.verils.transdoc.core.model.Picture;
+import com.github.verils.transdoc.core.old.Convertor;
+import com.github.verils.transdoc.core.old.MarkdownConverter;
+import com.github.verils.transdoc.core.old.WordParserOld;
+import com.github.verils.transdoc.core.old.model.Article;
+import com.github.verils.transdoc.core.old.model.Picture;
 
 public class TransformationService {
 
@@ -23,7 +23,7 @@ public class TransformationService {
 	public void transform(String workDirname, String filename, InputStream in) throws IOException {
 		LOGGER.info("文件上传成功: {}", filename);
 
-		WordParser parser = WordParser.prepare(in, true);
+		WordParserOld parser = WordParserOld.prepare(in, true);
 		Article article = parser.parse();
 
 		Convertor convertor = new MarkdownConverter();

@@ -1,12 +1,12 @@
-package com.github.verils.transdoc.core;
+package com.github.verils.transdoc.core.old;
 
-import com.github.verils.transdoc.core.model.Article;
-import com.github.verils.transdoc.core.model.Part;
-import com.github.verils.transdoc.core.model.Paragraph;
-import com.github.verils.transdoc.core.model.Picture;
+import com.github.verils.transdoc.core.old.model.Article;
+import com.github.verils.transdoc.core.old.model.Part;
+import com.github.verils.transdoc.core.old.model.Paragraph;
+import com.github.verils.transdoc.core.old.model.Picture;
 import java.util.List;
 
-import com.github.verils.transdoc.core.model.Table;
+import com.github.verils.transdoc.core.old.model.Table;
 
 public class MarkdownConverter implements Convertor {
 

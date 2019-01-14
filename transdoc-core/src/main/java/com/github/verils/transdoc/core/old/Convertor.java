@@ -1,6 +1,6 @@
-package com.github.verils.transdoc.core;
+package com.github.verils.transdoc.core.old;
 
-import com.github.verils.transdoc.core.model.Article;
+import com.github.verils.transdoc.core.old.model.Article;
 
 public interface Convertor {
 

@@ -1,7 +1,7 @@
-package com.github.verils.transdoc.core;
+package com.github.verils.transdoc.core.old;
 
-import com.github.verils.transdoc.core.model.Article;
-import com.github.verils.transdoc.core.model.Picture;
+import com.github.verils.transdoc.core.old.model.Article;
+import com.github.verils.transdoc.core.old.model.Picture;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;

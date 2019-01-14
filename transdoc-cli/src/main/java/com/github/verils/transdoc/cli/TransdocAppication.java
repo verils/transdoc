@@ -1,11 +1,11 @@
 package com.github.verils.transdoc.cli;
 
 import com.github.verils.transdoc.cli.logging.TransdocLogger;
-import com.github.verils.transdoc.core.Convertor;
-import com.github.verils.transdoc.core.MarkdownConverter;
-import com.github.verils.transdoc.core.WordParser;
-import com.github.verils.transdoc.core.model.Article;
-import com.github.verils.transdoc.core.model.Picture;
+import com.github.verils.transdoc.core.old.Convertor;
+import com.github.verils.transdoc.core.old.MarkdownConverter;
+import com.github.verils.transdoc.core.old.WordParserOld;
+import com.github.verils.transdoc.core.old.model.Article;
+import com.github.verils.transdoc.core.old.model.Picture;
 import org.apache.poi.util.IOUtils;
 
 import java.io.*;
@@ -108,7 +108,7 @@ public class TransdocAppication {
 		File destDir = new File(DEFAULT_DIR, docFilename);
 		destDir.mkdirs();
 
-		WordParser parser = WordParser.prepare(new FileInputStream(file));
+		WordParserOld parser = WordParserOld.prepare(new FileInputStream(file));
 		parser.setSavePictures(true);
 		Article article = parser.parse();
 

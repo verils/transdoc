@@ -1,4 +1,4 @@
-package com.github.verils.transdoc.core;
+package com.github.verils.transdoc.core.old;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
