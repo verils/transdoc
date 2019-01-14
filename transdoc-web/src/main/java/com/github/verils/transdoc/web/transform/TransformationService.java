@@ -11,8 +11,8 @@ import org.slf4j.LoggerFactory;
 import com.github.verils.transdoc.core.Convertor;
 import com.github.verils.transdoc.core.MarkdownConverter;
 import com.github.verils.transdoc.core.WordParser;
-import com.github.verils.transdoc.core.model.WordArticle;
-import com.github.verils.transdoc.core.model.WordPicture;
+import com.github.verils.transdoc.core.model.Article;
+import com.github.verils.transdoc.core.model.Picture;
 
 public class TransformationService {
 
@@ -24,7 +24,7 @@ public class TransformationService {
 		LOGGER.info("文件上传成功: {}", filename);
 
 		WordParser parser = WordParser.prepare(in, true);
-		WordArticle article = parser.parse();
+		Article article = parser.parse();
 
 		Convertor convertor = new MarkdownConverter();
 		String markdown = convertor.convert(article);
@@ -41,7 +41,7 @@ public class TransformationService {
 			Path docFile = workDir.resolve(pureFilename + ".md");
 			Files.write(docFile, markdown.getBytes("UTF-8"));
 
-			for (WordPicture picture : article.getPictures()) {
+			for (Picture picture : article.getPictures()) {
 				Path picFile = docDir.resolve(picture.getRelativePath());
 				Files.write(picFile, picture.getData());
 			}

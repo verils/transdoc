@@ -1,10 +1,10 @@
 package com.github.verils.transdoc.core;
 
-import com.github.verils.transdoc.core.model.WordArticle;
-import com.github.verils.transdoc.core.model.WordElement;
-import com.github.verils.transdoc.core.model.WordParagraph;
-import com.github.verils.transdoc.core.model.WordPicture;
-import com.github.verils.transdoc.core.model.WordTable;
+import com.github.verils.transdoc.core.model.Article;
+import com.github.verils.transdoc.core.model.Part;
+import com.github.verils.transdoc.core.model.Paragraph;
+import com.github.verils.transdoc.core.model.Picture;
+import com.github.verils.transdoc.core.model.Table;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -31,17 +31,17 @@ public class DocxParser extends WordParser {
 		this.doc = new XWPFDocument(input);
 	}
 
-	public WordArticle parse() {
-		WordArticle article = new WordArticle();
+	public Article parse() {
+		Article article = new Article();
 		parseDocument(article);
 		return article;
 	}
 
-	private void parseDocument(WordArticle article) {
-		List<WordElement> elements = article.getElements();
-		List<WordParagraph> paragraphs = article.getParagraphs();
-		List<WordTable> tables = article.getTables();
-		List<WordPicture> pictures = article.getPictures();
+	private void parseDocument(Article article) {
+		List<Part> parts = article.getParts();
+		List<Paragraph> paragraphs = article.getParagraphs();
+		List<Table> tables = article.getTables();
+		List<Picture> pictures = article.getPictures();
 
 		boolean isListStart = false;
 		boolean isInList = false;
@@ -63,39 +63,39 @@ public class DocxParser extends WordParser {
 						for (XWPFPicture xwpfPicture : embeddedPictures) {
 							XWPFPictureData pictureData = xwpfPicture.getPictureData();
 
-							WordPicture wordPicture = new DocxPictureWrapper(pictureData, inList);
+							Picture wordPicture = new DocxPictureWrapper(pictureData, inList);
 							wordPicture.setIndex(pictures.size() + 1);
 							wordPicture.setPictureName(pictureData.getFileName());
 							wordPicture.setExtension(pictureData.suggestFileExtension());
 							wordPicture.setRelativePath(getImagePath(wordPicture));
 							pictures.add(wordPicture);
-							elements.add(wordPicture);
+							parts.add(wordPicture);
 						}
 					}
 				}
 
 				String text = paragraph.getParagraphText().trim();
 				if (!paragraph.isEmpty() && !"".equals(text)) {
-					WordParagraph wordParagraph = new WordParagraph(text);
+					Paragraph wordParagraph = new Paragraph(text);
 					wordParagraph.setTitleLvl(getTitleLevel(paragraph));
 					wordParagraph.setInList(inList);
 					paragraphs.add(wordParagraph);
-					elements.add(wordParagraph);
+					parts.add(wordParagraph);
 				}
 				break;
 
 			case TABLE:
 				XWPFTable table = (XWPFTable) bodyElement;
-				WordTable docTable = null;
+				Table docTable = null;
 
 				int numRows = table.getNumberOfRows();
 				XWPFTableRow tr = table.getRow(0);
 				List<XWPFTableCell> tds = tr.getTableCells();
 				int numCells = tds.size();
 				if ((numRows == 1) && (numCells == 1)) {
-					docTable = new WordTable(numRows, numCells);
+					docTable = new Table(numRows, numCells);
 					docTable.setInList(isInList);
-					WordArticle cellContent = getCellContent((XWPFTableCell) tds.get(0), true);
+					Article cellContent = getCellContent((XWPFTableCell) tds.get(0), true);
 					docTable.setCell(0, 0, cellContent);
 				} else {
 					int maxNumCells = numCells;
@@ -104,13 +104,13 @@ public class DocxParser extends WordParser {
 						numCells = tr.getTableICells().size();
 						maxNumCells = (maxNumCells >= numCells) ? maxNumCells : numCells;
 					}
-					docTable = new WordTable(numRows, maxNumCells);
+					docTable = new Table(numRows, maxNumCells);
 					for (int i = 0; i < numRows; ++i) {
 						tr = table.getRow(i);
 						tds = tr.getTableCells();
 						numCells = tds.size();
 						for (int j = 0; j < numCells; ++j) {
-							WordArticle cellContent = new WordArticle();
+							Article cellContent = new Article();
 							if (j < numCells) {
 								cellContent = getCellContent(tr.getCell(j), false);
 							}
@@ -119,7 +119,7 @@ public class DocxParser extends WordParser {
 					}
 				}
 				tables.add(docTable);
-				elements.add(docTable);
+				parts.add(docTable);
 
 			default:
 				break;
@@ -143,10 +143,10 @@ public class DocxParser extends WordParser {
 		return 0;
 	}
 
-	private WordArticle getCellContent(XWPFTableCell tableCell, boolean isSingleBlock) {
-		WordArticle cellArticle = new WordArticle();
-		List<WordElement> cellElements = cellArticle.getElements();
-		List<WordParagraph> cellParagraphs = cellArticle.getParagraphs();
+	private Article getCellContent(XWPFTableCell tableCell, boolean isSingleBlock) {
+		Article cellArticle = new Article();
+		List<Part> cellParts = cellArticle.getParts();
+		List<Paragraph> cellParagraphs = cellArticle.getParagraphs();
 
 		List<XWPFParagraph> xwpfParagraphs = tableCell.getParagraphs();
 		for (XWPFParagraph paragraph : xwpfParagraphs) {
@@ -157,16 +157,16 @@ public class DocxParser extends WordParser {
 					text = "\t" + text;
 				}
 
-				WordParagraph wordParagraph = new WordParagraph(text);
+				Paragraph wordParagraph = new Paragraph(text);
 				cellParagraphs.add(wordParagraph);
-				cellElements.add(wordParagraph);
+				cellParts.add(wordParagraph);
 			}
 		}
 		return cellArticle;
 	}
 }
 
-class DocxPictureWrapper extends WordPicture {
+class DocxPictureWrapper extends Picture {
 	XWPFPictureData picture;
 
 	DocxPictureWrapper(XWPFPictureData picture, boolean inList) {

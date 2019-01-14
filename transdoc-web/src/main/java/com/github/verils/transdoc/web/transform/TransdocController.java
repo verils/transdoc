@@ -31,8 +31,8 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 import com.github.verils.transdoc.core.Convertor;
 import com.github.verils.transdoc.core.MarkdownConverter;
 import com.github.verils.transdoc.core.WordParser;
-import com.github.verils.transdoc.core.model.WordArticle;
-import com.github.verils.transdoc.core.model.WordPicture;
+import com.github.verils.transdoc.core.model.Article;
+import com.github.verils.transdoc.core.model.Picture;
 import com.github.verils.transdoc.web.web.Response;
 
 @CrossOrigin
@@ -52,8 +52,8 @@ public class TransdocController {
 
 		WordParser parser = WordParser.prepare(file.getInputStream());
 		parser.setSavePictures(true);
-		WordArticle article = parser.parse();
-		List<WordPicture> pictures = article.getPictures();
+		Article article = parser.parse();
+		List<Picture> pictures = article.getPictures();
 
 		Convertor convertor = new MarkdownConverter();
 		String markdown = convertor.convert(article);
@@ -66,7 +66,7 @@ public class TransdocController {
 			markdownDir = new File(markdownDir, pureFilename);
 			FileUtils.forceMkdir(markdownDir);
 
-			for (WordPicture picture : pictures) {
+			for (Picture picture : pictures) {
 				File pictureFile = new File(markdownDir, picture.getRelativePath());
 				FileUtils.forceMkdirParent(pictureFile);
 				FileCopyUtils.copy(picture.getData(), pictureFile);
@@ -106,8 +106,8 @@ public class TransdocController {
 
 				WordParser parser = WordParser.prepare(file.getInputStream());
 				parser.setSavePictures(true);
-				WordArticle article = parser.parse();
-				List<WordPicture> pictures = article.getPictures();
+				Article article = parser.parse();
+				List<Picture> pictures = article.getPictures();
 
 				Convertor convertor = new MarkdownConverter();
 				String markdown = convertor.convert(article);
@@ -115,7 +115,7 @@ public class TransdocController {
 				String base = "";
 				if (article.hasPictures()) {
 					base = pureFilename + File.separator;
-					for (WordPicture picture : pictures) {
+					for (Picture picture : pictures) {
 						String picturePath = base + picture.getRelativePath();
 						zos.putNextEntry(new ZipEntry(picturePath));
 						zos.write(picture.getData());

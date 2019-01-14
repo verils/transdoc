@@ -3,15 +3,15 @@ package com.github.verils.transdoc.core.model;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public abstract class WordPicture extends WordElement {
+public abstract class Picture extends Part {
 
 	private int index;
 	private String pictureName;
 	private String extension;
 	private String relativePath;
 
-	public WordPicture() {
-		super(Type.PICTURE);
+	public Picture() {
+		super(PartType.PICTURE);
 	}
 
 	public String getPictureName() {

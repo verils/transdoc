@@ -3,7 +3,7 @@ package com.github.verils.transdoc.core;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import com.github.verils.transdoc.core.model.WordArticle;
+import com.github.verils.transdoc.core.model.Article;
 import java.io.IOException;
 
 import org.junit.Test;
@@ -23,7 +23,7 @@ public class WordParserTest {
 	private void doParse(String resource) {
 		try {
 			WordParser parser = WordParser.prepare(WordParserTest.class.getResourceAsStream(resource));
-			WordArticle article = parser.parse();
+			Article article = parser.parse();
 			assertNotNull(article);
 		} catch (IOException e) {
 			fail(e.getMessage());

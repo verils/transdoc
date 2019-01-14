@@ -4,8 +4,8 @@ import com.github.verils.transdoc.cli.logging.TransdocLogger;
 import com.github.verils.transdoc.core.Convertor;
 import com.github.verils.transdoc.core.MarkdownConverter;
 import com.github.verils.transdoc.core.WordParser;
-import com.github.verils.transdoc.core.model.WordArticle;
-import com.github.verils.transdoc.core.model.WordPicture;
+import com.github.verils.transdoc.core.model.Article;
+import com.github.verils.transdoc.core.model.Picture;
 import org.apache.poi.util.IOUtils;
 
 import java.io.*;
@@ -110,7 +110,7 @@ public class TransdocAppication {
 
 		WordParser parser = WordParser.prepare(new FileInputStream(file));
 		parser.setSavePictures(true);
-		WordArticle article = parser.parse();
+		Article article = parser.parse();
 
 		// 将通用数据对象内容转换为md格式
 		Convertor convertor = new MarkdownConverter();
@@ -121,8 +121,8 @@ public class TransdocAppication {
 		fos.write(markdown.getBytes("UTF-8"));
 		IOUtils.closeQuietly(fos);
 
-		List<WordPicture> pictures = article.getPictures();
-		for (WordPicture picture : pictures) {
+		List<Picture> pictures = article.getPictures();
+		for (Picture picture : pictures) {
 			File picFile = new File(destDir, picture.getRelativePath());
 			if (!picFile.getParentFile().exists()) {
 				picFile.getParentFile().mkdirs();

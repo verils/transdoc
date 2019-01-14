@@ -1,7 +1,7 @@
 package com.github.verils.transdoc.core;
 
-import com.github.verils.transdoc.core.model.WordArticle;
-import com.github.verils.transdoc.core.model.WordPicture;
+import com.github.verils.transdoc.core.model.Article;
+import com.github.verils.transdoc.core.model.Picture;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,9 +49,9 @@ public abstract class WordParser {
 		}
 	}
 
-	public abstract WordArticle parse();
+	public abstract Article parse();
 
-	String getImagePath(WordPicture image) {
+	String getImagePath(Picture image) {
 		int index = image.getIndex();
 		String indexStr = ((index < 10) ? "0" : "") + index;
 		return pictureDir + "/" + pictureNamePattern.replace("%d", indexStr) + "." + image.getExtension();

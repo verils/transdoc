@@ -1,33 +1,33 @@
 package com.github.verils.transdoc.core;
 
-import com.github.verils.transdoc.core.model.WordArticle;
-import com.github.verils.transdoc.core.model.WordElement;
-import com.github.verils.transdoc.core.model.WordParagraph;
-import com.github.verils.transdoc.core.model.WordPicture;
+import com.github.verils.transdoc.core.model.Article;
+import com.github.verils.transdoc.core.model.Part;
+import com.github.verils.transdoc.core.model.Paragraph;
+import com.github.verils.transdoc.core.model.Picture;
 import java.util.List;
 
-import com.github.verils.transdoc.core.model.WordTable;
+import com.github.verils.transdoc.core.model.Table;
 
 public class MarkdownConverter implements Convertor {
 
 	@Override
-	public String convert(WordArticle article) {
+	public String convert(Article article) {
 		if (article == null) {
 			return "";
 		}
 
-		List<WordElement> elements = article.getElements();
+		List<Part> parts = article.getParts();
 		StringBuilder markdown = new StringBuilder();
 
-		for (WordElement wordElement : elements) {
-			boolean isInList = wordElement.isInList();
+		for (Part part : parts) {
+			boolean isInList = part.isInList();
 			if (isInList) {
 				markdown.append("\t");
 			}
 
-			switch (wordElement.getType()) {
+			switch (part.getType()) {
 			case PARAGRAPH: {
-				WordParagraph paragraph = (WordParagraph) wordElement;
+				Paragraph paragraph = (Paragraph) part;
 				String content = paragraph.getContent();
 				int titleLvl = paragraph.getTitleLvl();
 				int listLvl = paragraph.getListLvl();
@@ -46,12 +46,12 @@ public class MarkdownConverter implements Convertor {
 			}
 
 			case TABLE: {
-				WordTable table = (WordTable) wordElement;
+				Table table = (Table) part;
 				StringBuilder tableContent = new StringBuilder();
 				if (table.isBlock()) {
-					WordArticle cell = table.getCell(0, 0);
+					Article cell = table.getCell(0, 0);
 					tableContent.append("```").append("\n");
-					for (WordParagraph docParagraph : cell.getParagraphs()) {
+					for (Paragraph docParagraph : cell.getParagraphs()) {
 						tableContent.append(docParagraph.getContent()).append("\n");
 					}
 					tableContent.append("```");
@@ -61,7 +61,7 @@ public class MarkdownConverter implements Convertor {
 					for (int i = 0; i < rownum; i++) {
 						tableContent.append("|");
 						for (int j = 0; j < colnum; j++) {
-							WordArticle cell = table.getCell(i, j);
+							Article cell = table.getCell(i, j);
 							String cellContent = convertCell(cell);
 							cellContent = cellContent.trim().replaceAll("\n", "<br>");
 							tableContent.append(cellContent).append("|");
@@ -86,7 +86,7 @@ public class MarkdownConverter implements Convertor {
 			}
 
 			case PICTURE: {
-				WordPicture picture = (WordPicture) wordElement;
+				Picture picture = (Picture) part;
 				markdown.append("![](").append(picture.getRelativePath()).append(")");
 				break;
 			}
@@ -99,7 +99,7 @@ public class MarkdownConverter implements Convertor {
 		return markdown.toString();
 	}
 
-	private String convertCell(WordArticle cell) {
+	private String convertCell(Article cell) {
 		return convert(cell);
 	}
 

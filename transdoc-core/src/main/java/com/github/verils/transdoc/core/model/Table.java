@@ -2,34 +2,34 @@ package com.github.verils.transdoc.core.model;
 
 import java.util.Arrays;
 
-public class WordTable extends WordElement {
+public class Table extends Part {
 	private int rownum;
 	private int colnum;
 	private boolean isBlock;
-	private WordArticle[][] data;
+	private Article[][] data;
 
-	public WordTable(int rownum, int colnum) {
-		super(Type.TABLE);
+	public Table(int rownum, int colnum) {
+		super(PartType.TABLE);
 		this.rownum = rownum;
 		this.colnum = colnum;
 		this.isBlock = (rownum == 1 && colnum == 1);
-		this.data = new WordArticle[rownum][colnum];
+		this.data = new Article[rownum][colnum];
 	}
 
-	public WordArticle[] getRow(int rownum) {
+	public Article[] getRow(int rownum) {
 		return this.data[rownum];
 	}
 
-	public void setRow(int rownum, WordArticle[] row) {
+	public void setRow(int rownum, Article[] row) {
 		if ((rownum >= 0) && (rownum < this.rownum))
 			this.data[rownum] = row;
 	}
 
-	public WordArticle getCell(int rownum, int colnum) {
+	public Article getCell(int rownum, int colnum) {
 		return this.data[rownum][colnum];
 	}
 
-	public void setCell(int rownum, int colnum, WordArticle content) {
+	public void setCell(int rownum, int colnum, Article content) {
 		if ((rownum >= 0) && (rownum < this.rownum) && (colnum >= 0) && (colnum < this.colnum))
 			this.data[rownum][colnum] = content;
 	}
