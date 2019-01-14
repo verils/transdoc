@@ -24,7 +24,7 @@ import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTDecimalNumber;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPPr;
 
-public class DocxParser extends WordParser {
+public class DocxParser extends WordParserOld {
 	private XWPFDocument doc;
 
 	DocxParser(InputStream input) throws IOException {

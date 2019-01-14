@@ -5,24 +5,34 @@ import static org.junit.Assert.fail;
 
 import com.github.verils.transdoc.core.model.Article;
 import java.io.IOException;
+import java.io.InputStream;
 
+import com.github.verils.transdoc.core.old.WordParserOld;
+import com.github.verils.transdoc.core.parser.WordParser;
 import org.junit.Test;
 
 public class WordParserTest {
 
 	@Test
+	public void testParse() {
+		InputStream input = WordParserTest.class.getResourceAsStream("/test.doc");
+		WordParser parser = WordParser.parse(input);
+		Article article = parser.getArticle();
+	}
+
+	@Test
 	public void testPrepareForDoc() {
-		doParse("/测试.doc");
+		doParse("/test.doc");
 	}
 
 	@Test
 	public void testPrepareForDocx() {
-		doParse("/测试.docx");
+		doParse("/test.docx");
 	}
 
 	private void doParse(String resource) {
 		try {
-			WordParser parser = WordParser.prepare(WordParserTest.class.getResourceAsStream(resource));
+			WordParserOld parser = WordParserOld.prepare(WordParserTest.class.getResourceAsStream(resource));
 			Article article = parser.parse();
 			assertNotNull(article);
 		} catch (IOException e) {

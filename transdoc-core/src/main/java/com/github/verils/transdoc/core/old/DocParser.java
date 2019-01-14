@@ -15,7 +15,7 @@ import org.apache.poi.hwpf.usermodel.TableCell;
 import org.apache.poi.hwpf.usermodel.TableIterator;
 import org.apache.poi.hwpf.usermodel.TableRow;
 
-public class DocParser extends WordParser {
+public class DocParser extends WordParserOld {
 	private HWPFDocument doc;
 	private Range docRange;
 

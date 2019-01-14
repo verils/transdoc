@@ -9,16 +9,16 @@ import java.io.InputStream;
 import org.apache.poi.UnsupportedFileFormatException;
 import org.apache.poi.util.IOUtils;
 
-public abstract class WordParser {
+public abstract class WordParserOld {
 	boolean savePictures = false;
 	String pictureDir = "picture";
 	String pictureNamePattern = "pic_%d";
 
-	public static WordParser prepare(InputStream stream) throws TransdocException, IOException {
+	public static WordParserOld prepare(InputStream stream) throws TransdocException, IOException {
 		return prepare(stream, false);
 	}
 
-	public static WordParser prepare(InputStream stream, boolean savePictures) throws TransdocException, IOException {
+	public static WordParserOld prepare(InputStream stream, boolean savePictures) throws TransdocException, IOException {
 		if (stream == null) {
 			throw new NullPointerException("InputStream can not be null");
 		}
@@ -26,7 +26,7 @@ public abstract class WordParser {
 		byte[] data = IOUtils.toByteArray(stream);
 		IOUtils.closeQuietly(stream);
 
-		WordParser wordParser = null;
+		WordParserOld wordParser = null;
 		try {
 			wordParser = new DocxParser(new ByteArrayInputStream(data));
 		} catch (UnsupportedFileFormatException e) {
@@ -39,7 +39,7 @@ public abstract class WordParser {
 		return wordParser;
 	}
 
-	private static WordParser tryDocParser(InputStream stream) {
+	private static WordParserOld tryDocParser(InputStream stream) {
 		try {
 			return new DocParser(stream);
 		} catch (IOException e) {
