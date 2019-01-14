@@ -57,5 +57,3 @@ Markdown支持两种标题的编写格式，分别是Setext和atx，本工具使
 
 下载获取分发包transdoc-bin.zip，解压到任意目录，点击run.bat即可执行程序，程序将扫描./docs目录下的doc文件并进行转换，输出到./docs目录中。  
 或者解压后打开how_to_use.txt阅读使用说明。
-
-下载地址：http://ftp.cqrd.com/upload/transdoc/
