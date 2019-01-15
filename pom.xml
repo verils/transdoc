@@ -12,7 +12,7 @@
     <modules>
         <module>transdoc-core</module>
         <module>transdoc-cli</module>
-        <module>transdoc-web</module>
+        <!--<module>transdoc-web</module>-->
     </modules>
 
     <properties>
