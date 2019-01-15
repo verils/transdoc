@@ -9,12 +9,12 @@ import java.nio.charset.StandardCharsets;
 
 public class Transdoc {
 
-    public static void parse(Converter converter, InputStream input, OutputStream output) throws IOException {
+    public static void parse(Converter converter, InputStream input, OutputStream output) {
         OutputStreamWriter writer = new OutputStreamWriter(output, StandardCharsets.UTF_8);
         parse(converter, input, writer);
     }
 
-    public static void parse(Converter converter, InputStream input, Writer writer) throws IOException {
+    public static void parse(Converter converter, InputStream input, Writer writer) {
         Assert.notNull("Converter required.", converter);
         Assert.notNull("Word document source required.", input);
         Assert.notNull("Output destination required.", writer);

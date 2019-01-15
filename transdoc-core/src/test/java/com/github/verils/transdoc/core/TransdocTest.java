@@ -23,7 +23,7 @@ public class TransdocTest {
     }
 
     @Test
-    public void testDocToStream() throws IOException {
+    public void testDocToStream() {
 
         InputStream input = TransdocTest.class.getResourceAsStream("/test.doc");
         ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -32,7 +32,7 @@ public class TransdocTest {
     }
 
     @Test
-    public void testDocxToStream() throws IOException {
+    public void testDocxToStream() {
         InputStream input = TransdocTest.class.getResourceAsStream("/test.docx");
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         Transdoc.parse(converter, input, output);
@@ -40,7 +40,7 @@ public class TransdocTest {
     }
 
     @Test
-    public void testDocToWriter() throws IOException {
+    public void testDocToWriter() {
         InputStream input = TransdocTest.class.getResourceAsStream("/test.doc");
         StringWriter writer = new StringWriter();
         Transdoc.parse(converter, input, writer);
@@ -48,7 +48,7 @@ public class TransdocTest {
     }
 
     @Test
-    public void testDocxToWriter() throws IOException {
+    public void testDocxToWriter() {
         InputStream input = TransdocTest.class.getResourceAsStream("/test.docx");
         StringWriter writer = new StringWriter();
         Transdoc.parse(converter, input, writer);
