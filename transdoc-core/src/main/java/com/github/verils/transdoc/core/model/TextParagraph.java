@@ -1,4 +1,4 @@
 package com.github.verils.transdoc.core.model;
 
-public interface Part {
+public class TextParagraph implements Part {
 }

@@ -1,39 +1,36 @@
 package com.github.verils.transdoc.core.parser;
 
-import com.github.verils.transdoc.core.model.ParagraphPart;
-import com.github.verils.transdoc.core.model.Part;
-import com.github.verils.transdoc.core.model.TitlePart;
-import com.github.verils.transdoc.core.model.Article;
+import com.github.verils.transdoc.core.model.*;
 import com.github.verils.transdoc.core.util.StringUtils;
 import org.apache.poi.hwpf.HWPFDocument;
-import org.apache.poi.hwpf.usermodel.Paragraph;
-import org.apache.poi.hwpf.usermodel.Range;
+import org.apache.poi.hwpf.model.PicturesTable;
+import org.apache.poi.hwpf.usermodel.*;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 class DocParser extends WordParser {
 
     private final HWPFDocument document;
 
-    private final Range documentRange;
+    private List<PictureEntry> pictures;
 
     DocParser(InputStream source) throws IOException {
         this.document = new HWPFDocument(source);
-        this.documentRange = this.document.getRange();
-    }
-
-    @Override
-    public Article getArticle() {
         parse();
-        return new Article();
     }
 
     private void parse() {
+        parsePictures();
+        parseTables();
+
         List<Part> parts = new ArrayList<>();
 
+        Range documentRange = this.document.getRange();
         int numParagraphs = documentRange.numParagraphs();
         for (int i = 0; i < numParagraphs; i++) {
             Paragraph paragraph = documentRange.getParagraph(i);
@@ -45,6 +42,44 @@ class DocParser extends WordParser {
                 parseParagraph(parts, paragraph);
             }
         }
+    }
+
+    private void parsePictures() {
+        PicturesTable picturesTable = document.getPicturesTable();
+        List<Picture> allPictures = picturesTable.getAllPictures();
+        this.pictures = IntStream.range(0, allPictures.size())
+                .mapToObj(i -> getPictureEntry(i, allPictures.get(i)))
+                .collect(Collectors.toList());
+    }
+
+    private void parseTables() {
+        TableIterator tableIterator = new TableIterator(document.getRange());
+        while (tableIterator.hasNext()) {
+            Table table = tableIterator.next();
+            int rows = table.numRows();
+            int cols = table.getRow(0).numCells();
+            if (rows == 1 && cols == 1) {
+                TableEntry tableEntry = new TableEntry();
+            } else {
+
+            }
+        }
+    }
+
+    private PictureEntry getPictureEntry(int index, Picture picture) {
+        PictureEntry pictureEntry = new PictureEntry();
+        pictureEntry.setId(index);
+        pictureEntry.setName(picture.suggestFullFileName());
+        pictureEntry.setExtension(picture.suggestFileExtension());
+        pictureEntry.setDataOffset(picture.getStartOffset());
+        pictureEntry.setData(picture.getContent());
+        return pictureEntry;
+    }
+
+    @Override
+    public Article getArticle() {
+        Article article = new Article();
+        return article;
     }
 
     private boolean hasPicture(Paragraph paragraph) {
@@ -60,9 +95,9 @@ class DocParser extends WordParser {
         if (StringUtils.hasText(text)) {
             int titleLevel = getTitleLevel(paragraph.getLvl());
             if (isTitle(titleLevel)) {
-                TitlePart titlePart = new TitlePart();
+                TitleParagraph titleParagraph = new TitleParagraph();
             } else {
-                ParagraphPart paragraphPart = new ParagraphPart();
+                TextParagraph textParagraph = new TextParagraph();
             }
         }
     }
@@ -74,5 +109,10 @@ class DocParser extends WordParser {
 
     private boolean isTitle(int titleLevel) {
         return titleLevel > 0;
+    }
+
+    @Override
+    public void close() throws IOException {
+        document.close();
     }
 }
