@@ -15,11 +15,11 @@ import static org.mockito.Mockito.when;
 
 public class TransdocTest {
 
-    private Formatter formatter = mock(Formatter.class);
+    private Converter converter = mock(Converter.class);
 
     @Before
     public void setUp() {
-        when(formatter.format(any())).thenReturn("test");
+        when(converter.convert(any())).thenReturn("test");
     }
 
     @Test
@@ -27,7 +27,7 @@ public class TransdocTest {
 
         InputStream input = TransdocTest.class.getResourceAsStream("/test.doc");
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        Transdoc.parse(formatter, input, output);
+        Transdoc.parse(converter, input, output);
         assertEquals("test\n", new String(output.toByteArray()));
     }
 
@@ -35,7 +35,7 @@ public class TransdocTest {
     public void testDocxToStream() throws IOException {
         InputStream input = TransdocTest.class.getResourceAsStream("/test.docx");
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        Transdoc.parse(formatter, input, output);
+        Transdoc.parse(converter, input, output);
         assertEquals("test\n", new String(output.toByteArray()));
     }
 
@@ -43,7 +43,7 @@ public class TransdocTest {
     public void testDocToWriter() throws IOException {
         InputStream input = TransdocTest.class.getResourceAsStream("/test.doc");
         StringWriter writer = new StringWriter();
-        Transdoc.parse(formatter, input, writer);
+        Transdoc.parse(converter, input, writer);
         assertEquals("test\n", writer.toString());
     }
 
@@ -51,7 +51,7 @@ public class TransdocTest {
     public void testDocxToWriter() throws IOException {
         InputStream input = TransdocTest.class.getResourceAsStream("/test.docx");
         StringWriter writer = new StringWriter();
-        Transdoc.parse(formatter, input, writer);
+        Transdoc.parse(converter, input, writer);
         assertEquals("test\n", writer.toString());
     }
 }

@@ -1,6 +1,6 @@
 package com.github.verils.transdoc.core.parser;
 
-import com.github.verils.transdoc.core.old.model.Article;
+import com.github.verils.transdoc.core.model.Article;
 
 import java.io.IOException;
 import java.io.InputStream;

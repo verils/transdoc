@@ -3,7 +3,7 @@ package com.github.verils.transdoc.core.parser;
 import com.github.verils.transdoc.core.model.ParagraphPart;
 import com.github.verils.transdoc.core.model.Part;
 import com.github.verils.transdoc.core.model.TitlePart;
-import com.github.verils.transdoc.core.old.model.Article;
+import com.github.verils.transdoc.core.model.Article;
 import com.github.verils.transdoc.core.util.StringUtils;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.usermodel.Paragraph;
