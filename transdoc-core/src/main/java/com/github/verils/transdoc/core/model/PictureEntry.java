@@ -1,54 +1,15 @@
 package com.github.verils.transdoc.core.model;
 
-public class PictureEntry implements Part {
+public interface PictureEntry extends Part {
 
-    private int id;
+    int getId();
 
-    private String name;
+    String getName();
 
-    private String extension;
+    String getExtension();
 
-    private int dataOffset;
+    int getDataOffset();
 
-    private byte[] data;
+    byte[] getData();
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getExtension() {
-        return extension;
-    }
-
-    public void setExtension(String extension) {
-        this.extension = extension;
-    }
-
-    public int getDataOffset() {
-        return dataOffset;
-    }
-
-    public void setDataOffset(int dataOffset) {
-        this.dataOffset = dataOffset;
-    }
-
-    public byte[] getData() {
-        return data;
-    }
-
-    public void setData(byte[] data) {
-        this.data = data;
-    }
 }

@@ -1,4 +1,8 @@
 package com.github.verils.transdoc.core.model;
 
-public class TextParagraph implements Part {
+import java.util.List;
+
+public interface TextParagraph extends Part {
+
+    List<TextPiece> getTextPieces();
 }

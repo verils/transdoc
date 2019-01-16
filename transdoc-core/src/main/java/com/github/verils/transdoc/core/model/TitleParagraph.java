@@ -1,4 +1,8 @@
 package com.github.verils.transdoc.core.model;
 
-public class TitleParagraph implements Part {
+public interface TitleParagraph extends Part {
+
+    String getText();
+
+    int getLevel();
 }

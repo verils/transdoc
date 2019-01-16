@@ -19,6 +19,8 @@ class DocParser extends WordParser {
 
     private List<PictureEntry> pictures;
 
+    private List<TablePart> tables;
+
     DocParser(InputStream source) throws IOException {
         this.document = new HWPFDocument(source);
         parse();
@@ -27,9 +29,51 @@ class DocParser extends WordParser {
     private void parse() {
         parsePictures();
         parseTables();
+        parseParagraphs();
+    }
 
+    private void parsePictures() {
+        PicturesTable picturesTable = document.getPicturesTable();
+        List<Picture> allPictures = picturesTable.getAllPictures();
+        this.pictures = IntStream.range(0, allPictures.size())
+                .mapToObj(i -> createPictureEntry(i, allPictures.get(i)))
+                .collect(Collectors.toList());
+    }
+
+    private PictureEntry createPictureEntry(int index, Picture picture) {
+        PictureEntryImpl entry = new PictureEntryImpl();
+        entry.setId(index);
+        entry.setName(picture.suggestFullFileName());
+        entry.setExtension(picture.suggestFileExtension());
+        entry.setDataOffset(picture.getStartOffset());
+        entry.setData(picture.getContent());
+        return entry;
+    }
+
+    private void parseTables() {
+        TableIterator tableIterator = new TableIterator(document.getRange());
+        while (tableIterator.hasNext()) {
+            Table table = tableIterator.next();
+            int rows = table.numRows();
+            int cols = table.getRow(0).numCells();
+            if (rows == 1 && cols == 1) {
+                TableCell cell = table.getRow(0).getCell(0);
+                String content = parseCellContent(cell);
+                SimpleTableEntry simpleTableEntry = new SimpleTableEntry();
+                simpleTableEntry.setContent(content);
+            } else {
+                TableEntry tableEntry = new TableEntry();
+
+            }
+        }
+    }
+
+    private String parseCellContent(TableCell cell) {
+        return null;
+    }
+
+    private void parseParagraphs() {
         List<Part> parts = new ArrayList<>();
-
         Range documentRange = this.document.getRange();
         int numParagraphs = documentRange.numParagraphs();
         for (int i = 0; i < numParagraphs; i++) {
@@ -44,41 +88,9 @@ class DocParser extends WordParser {
         }
     }
 
-    private void parsePictures() {
-        PicturesTable picturesTable = document.getPicturesTable();
-        List<Picture> allPictures = picturesTable.getAllPictures();
-        this.pictures = IntStream.range(0, allPictures.size())
-                .mapToObj(i -> getPictureEntry(i, allPictures.get(i)))
-                .collect(Collectors.toList());
-    }
-
-    private void parseTables() {
-        TableIterator tableIterator = new TableIterator(document.getRange());
-        while (tableIterator.hasNext()) {
-            Table table = tableIterator.next();
-            int rows = table.numRows();
-            int cols = table.getRow(0).numCells();
-            if (rows == 1 && cols == 1) {
-                TableEntry tableEntry = new TableEntry();
-            } else {
-
-            }
-        }
-    }
-
-    private PictureEntry getPictureEntry(int index, Picture picture) {
-        PictureEntry pictureEntry = new PictureEntry();
-        pictureEntry.setId(index);
-        pictureEntry.setName(picture.suggestFullFileName());
-        pictureEntry.setExtension(picture.suggestFileExtension());
-        pictureEntry.setDataOffset(picture.getStartOffset());
-        pictureEntry.setData(picture.getContent());
-        return pictureEntry;
-    }
-
     @Override
     public Article getArticle() {
-        Article article = new Article();
+        Article article = new ArticleImpl();
         return article;
     }
 
