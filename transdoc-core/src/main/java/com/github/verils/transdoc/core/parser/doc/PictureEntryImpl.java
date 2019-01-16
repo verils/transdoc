@@ -1,4 +1,4 @@
-package com.github.verils.transdoc.core.parser;
+package com.github.verils.transdoc.core.parser.doc;
 
 import com.github.verils.transdoc.core.model.Part;
 import com.github.verils.transdoc.core.model.PictureEntry;

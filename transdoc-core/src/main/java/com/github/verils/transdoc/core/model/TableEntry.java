@@ -1,4 +1,4 @@
 package com.github.verils.transdoc.core.model;
 
-public class TableEntry implements Part {
+public interface TableEntry extends Part {
 }
