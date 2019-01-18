@@ -8,5 +8,5 @@ public interface WordDocument {
 
     List<TablePart> getTables();
 
-    List<Part> getEntries();
+    List<Part> getParts();
 }

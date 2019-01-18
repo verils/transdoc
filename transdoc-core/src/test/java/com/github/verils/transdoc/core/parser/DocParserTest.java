@@ -35,11 +35,11 @@ public class DocParserTest {
         List<TablePart> tables = document.getTables();
         assertEquals(8, tables.size());
 
-        List<Part> entries = document.getEntries();
-        assertFalse(entries.isEmpty());
+        List<Part> parts = document.getParts();
+        assertFalse(parts.isEmpty());
 
-        for (Part part : entries) {
-            System.out.println(part.toString());
+        for (Part part : parts) {
+            System.out.println(part);
             assertNotNull(part);
         }
     }

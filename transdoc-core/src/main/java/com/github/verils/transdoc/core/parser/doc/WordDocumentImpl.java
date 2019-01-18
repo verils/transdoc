@@ -12,7 +12,7 @@ public class WordDocumentImpl implements WordDocument {
 
     private List<TablePart> tables;
 
-    private List<Part> entries;
+    private List<Part> parts;
 
     @Override
     public List<PicturePart> getPictures() {
@@ -33,11 +33,11 @@ public class WordDocumentImpl implements WordDocument {
     }
 
     @Override
-    public List<Part> getEntries() {
-        return entries;
+    public List<Part> getParts() {
+        return parts;
     }
 
-    public void setEntries(List<Part> entries) {
-        this.entries = entries;
+    public void setParts(List<Part> parts) {
+        this.parts = parts;
     }
 }

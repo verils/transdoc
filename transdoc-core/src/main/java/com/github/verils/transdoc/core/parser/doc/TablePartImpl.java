@@ -46,4 +46,12 @@ public class TablePartImpl implements TablePart {
     public void setCell(int row, int col, TableCell tableCellEntry) {
         matrix[row][col] = tableCellEntry;
     }
+
+    @Override
+    public String toString() {
+        return "TablePartImpl{" +
+            "rows=" + rows +
+            ", cols=" + cols +
+            '}';
+    }
 }

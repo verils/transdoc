@@ -34,7 +34,7 @@ class DocParser extends WordParser {
         WordDocumentImpl docWordDocument = new WordDocumentImpl();
         docWordDocument.setPictures(pictureEntries);
         docWordDocument.setTables(tableEntries);
-        docWordDocument.setEntries(entries);
+        docWordDocument.setParts(entries);
         return docWordDocument;
     }
 

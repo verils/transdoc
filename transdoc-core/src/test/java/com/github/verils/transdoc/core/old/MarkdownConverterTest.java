@@ -10,8 +10,10 @@ import com.github.verils.transdoc.core.old.Convertor;
 import com.github.verils.transdoc.core.old.MarkdownConverter;
 import com.github.verils.transdoc.core.old.WordParserOld;
 import com.github.verils.transdoc.core.parser.WordParserTest;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class MarkdownConverterTest {
 
 	@Test
