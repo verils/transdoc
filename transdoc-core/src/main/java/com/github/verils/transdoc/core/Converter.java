@@ -1,8 +1,8 @@
 package com.github.verils.transdoc.core;
 
-import com.github.verils.transdoc.core.model.Article;
+import com.github.verils.transdoc.core.model.WordDocument;
 
 public interface Converter {
 
-    String convert(Article article);
+    String convert(WordDocument article);
 }

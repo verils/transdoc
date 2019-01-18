@@ -2,37 +2,38 @@ package com.github.verils.transdoc.core;
 
 import com.github.verils.transdoc.core.model.*;
 
-import java.util.stream.IntStream;
-
 public class MarkdownConverter implements Converter {
 
     private static final String EMPTY_STRING = "";
 
     @Override
-    public String convert(Article article) {
-        return article.getParts()
-                .stream()
-                .map(this::convertPart)
-                .reduce(this::joinLine)
-                .orElse(EMPTY_STRING);
+    public String convert(WordDocument article) {
+        StringBuilder builder = new StringBuilder();
+//        for (Entry part : article.getParts()) {
+//            String mdParagraph = convertPart(part);
+//            builder.append(mdParagraph);
+//        }
+//        return builder.toString();
+        return null;
     }
 
-    private String convertPart(Part part) {
-        if (part instanceof TextParagraph) {
-            return convert((TextParagraph) part);
-        } else if (part instanceof TitleParagraph) {
-            return convert((TitleParagraph) part);
+    private String convertPart(Entry entry) {
+        if (entry instanceof TextParagraphEntry) {
+            return convert((TextParagraphEntry) entry);
+        } else if (entry instanceof TitleParagraphEntry) {
+            return convert((TitleParagraphEntry) entry);
         } else {
             return EMPTY_STRING;
         }
     }
 
-    private String convert(TextParagraph textParagraph) {
-        return textParagraph.getTextPieces()
-                .stream()
-                .map(this::convert)
-                .reduce(this::joinText)
-                .orElse("");
+    private String convert(TextParagraphEntry textParagraph) {
+        StringBuilder builder = new StringBuilder();
+        for (TextPiece textPiece : textParagraph.getTextPieces()) {
+            String text = convert(textPiece);
+            builder.append(text);
+        }
+        return builder.toString();
     }
 
     private String convert(TextPiece textPiece) {
@@ -46,12 +47,14 @@ public class MarkdownConverter implements Converter {
         }
     }
 
-    private String convert(TitleParagraph titleParagraph) {
+    private String convert(TitleParagraphEntry titleParagraph) {
         String text = titleParagraph.getText();
         int level = titleParagraph.getLevel();
         if (level > 0) {
             StringBuilder builder = new StringBuilder();
-            IntStream.range(0, level).forEach(i -> builder.append("#"));
+            for (int i = 0; i < level; i++) {
+                builder.append("#");
+            }
             return builder.append(" ").append(text).toString();
         }
         return text;

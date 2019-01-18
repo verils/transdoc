@@ -11,138 +11,166 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 class DocParser extends WordParser {
 
-    private final HWPFDocument document;
+    private final InputStream source;
 
-    private List<Part> parts;
-
-    DocParser(InputStream source) throws IOException {
-        this.document = new HWPFDocument(source);
-        this.parts = parseDocument();
+    DocParser(InputStream source) {
+        this.source = source;
     }
 
-    private List<Part> parseDocument() {
-        List<PictureEntry> pictures = parsePictures();
-        List<TableEntry> tables = parseTables();
-        return parseDocumentParagraphs(pictures, tables);
+    @Override
+    public WordDocument parse() throws IOException {
+        HWPFDocument hwpfDocument = new HWPFDocument(source);
+
+        List<PictureEntry> pictureEntries = parsePictures(hwpfDocument);
+        List<TableEntry> tableEntries = parseTables(hwpfDocument);
+        List<Entry> entries = parseParagraphs(hwpfDocument, pictureEntries, tableEntries);
+
+        hwpfDocument.close();
+
+        WordDocumentImpl docWordDocument = new WordDocumentImpl();
+        docWordDocument.setPictures(pictureEntries);
+        docWordDocument.setTables(tableEntries);
+        docWordDocument.setEntries(entries);
+        return docWordDocument;
     }
 
-    private List<PictureEntry> parsePictures() {
-        PicturesTable picturesTable = document.getPicturesTable();
+    /**
+     * 解析图片
+     *
+     * @param hwpfDocument hwpfDocument
+     * @return 图片列表
+     */
+    private List<PictureEntry> parsePictures(HWPFDocument hwpfDocument) {
+        List<PictureEntry> pictureEntries = new ArrayList<PictureEntry>();
+        PicturesTable picturesTable = hwpfDocument.getPicturesTable();
         List<Picture> allPictures = picturesTable.getAllPictures();
-        return IntStream.range(0, allPictures.size())
-                .mapToObj(i -> createPictureEntry(i, allPictures.get(i)))
-                .collect(Collectors.toList());
+        for (int i = 0; i < allPictures.size(); i++) {
+            Picture picture = allPictures.get(i);
+            pictureEntries.add(createPictureEntry(i, picture));
+        }
+        return pictureEntries;
     }
 
-    private List<TableEntry> parseTables() {
-        TableIterator tableIterator = new TableIterator(document.getRange());
-        List<TableEntry> tables = new ArrayList<>();
+    /**
+     * 解析表格
+     *
+     * @param hwpfDocument hwpfDocument
+     * @return 表格列表
+     */
+    private List<TableEntry> parseTables(HWPFDocument hwpfDocument) {
+        List<TableEntry> tables = new ArrayList<TableEntry>();
+        TableIterator tableIterator = new TableIterator(hwpfDocument.getRange());
         while (tableIterator.hasNext()) {
             Table table = tableIterator.next();
-            int rows = table.numRows();
-            int cols = table.getRow(0).numCells();
-            if (rows == 1 && cols == 1) {
-                tables.add(createSingleCellTableEntry(table));
-            } else {
-                tables.add(createTableEntry(table));
-            }
+            tables.add(createTableEntry(table));
         }
         return tables;
     }
 
-    private List<Part> parseDocumentParagraphs(List<PictureEntry> pictures, List<TableEntry> tables) {
-        List<Part> parts = new ArrayList<>();
-        Range documentRange = this.document.getRange();
+    /**
+     * 解析段落
+     *
+     * @param hwpfDocument hwpfDocument
+     * @param pictures     图片列表
+     * @param tables       表格列表
+     * @return 元素列表
+     */
+    private List<Entry> parseParagraphs(HWPFDocument hwpfDocument, List<PictureEntry> pictures, List<TableEntry> tables) {
+        List<Entry> entries = new ArrayList<Entry>();
+        PicturesTable picturesTable = hwpfDocument.getPicturesTable();
+        Range documentRange = hwpfDocument.getRange();
+        int pictureIndex = 0, tableIndex = 0;
         for (int i = 0; i < documentRange.numParagraphs(); i++) {
             Paragraph paragraph = documentRange.getParagraph(i);
-            if (hasPicture(paragraph)) {
-                getPicture(pictures, paragraph).ifPresent(parts::add);
-            } else if (inTable(paragraph)) {
-                getTable(tables, paragraph).ifPresent(parts::add);
+            if (hasPicture(picturesTable, paragraph)) {
+                PictureEntry pictureEntry = pictures.get(pictureIndex++);
+                entries.add(pictureEntry);
+            } else if (inTable(tables, paragraph)) {
+                TableEntry tableEntry = tables.get(tableIndex++);
+                entries.add(tableEntry);
             } else {
-                getParagraph(paragraph).ifPresent(parts::add);
+                ParagraphEntry paragraphEntry = createParagraphEntry(paragraph);
+                entries.add(paragraphEntry);
             }
         }
-        return parts;
-    }
-
-    private Optional<PictureEntry> getPicture(List<PictureEntry> pictures, Paragraph paragraph) {
-        return Optional.empty();
-    }
-
-    private Optional<TableEntry> getTable(List<TableEntry> tables, Paragraph paragraph) {
-        return Optional.empty();
-    }
-
-    private Optional<Part> getParagraph(Paragraph paragraph) {
-        String text = paragraph.text();
-        if (StringUtils.hasText(text)) {
-            int titleLevel = getTitleLevel(paragraph.getLvl());
-            if (isTitle(titleLevel)) {
-                TitleParagraphImpl titleParagraph = new TitleParagraphImpl(text, titleLevel);
-                return Optional.of(titleParagraph);
-            } else {
-                TextParagraphImpl textParagraph = new TextParagraphImpl();
-                return Optional.of(textParagraph);
-            }
-        }
-        return Optional.empty();
+        return entries;
     }
 
     private PictureEntry createPictureEntry(int index, Picture picture) {
-        PictureEntryImpl entry = new PictureEntryImpl();
-        entry.setId(index);
-        entry.setName(picture.suggestFullFileName());
-        entry.setExtension(picture.suggestFileExtension());
-        entry.setDataOffset(picture.getStartOffset());
-        entry.setData(picture.getContent());
-        return entry;
+        PictureEntryImpl pictureEntry = new PictureEntryImpl();
+        pictureEntry.setId(index);
+        pictureEntry.setName(picture.suggestFullFileName());
+        pictureEntry.setExtension(picture.suggestFileExtension());
+        pictureEntry.setDataOffset(picture.getStartOffset());
+        pictureEntry.setData(picture.getContent());
+        return pictureEntry;
     }
 
-    private SingleCellTableEntry createSingleCellTableEntry(Table table) {
-        TableCell cell = table.getRow(0).getCell(0);
-        List<Part> parts = IntStream.range(0, cell.numCharacterRuns())
-                .mapToObj(cell::getParagraph)
-                .map(this::getParagraph)
-                .map(Optional::get)
-                .collect(Collectors.toList());
-        return new SingleCellTableEntryImpl(parts);
+    private TableEntry createTableEntry(Table table) {
+        int rows = table.numRows();
+        int cols = table.getRow(0).numCells();
+        TableEntryImpl tableEntry = new TableEntryImpl(table.getStartOffset(), table.getEndOffset(), rows, cols);
+        for (int i = 0; i < rows; i++) {
+            TableRow row = table.getRow(i);
+            for (int j = 0; j < row.numCells(); j++) {
+                TableCell cell = row.getCell(j);
+                TableCellEntry tableCellEntry = createTableCellEntry(cell);
+                tableEntry.setCell(i, j, tableCellEntry);
+            }
+        }
+        return tableEntry;
     }
 
-    private SingleCellTableEntry createTableEntry(Table table) {
-        return null;
+    private TableCellEntry createTableCellEntry(TableCell cell) {
+        List<Entry> entries = new ArrayList<Entry>();
+        for (int i = 0; i < cell.numParagraphs(); i++) {
+            Paragraph paragraph = cell.getParagraph(i);
+            ParagraphEntry entry = createParagraphEntry(paragraph);
+            entries.add(entry);
+        }
+        return new TableCellEntryImpl(entries);
     }
 
-    private boolean hasPicture(Paragraph paragraph) {
+    private ParagraphEntry createParagraphEntry(Paragraph paragraph) {
+        String text = escapeText(paragraph.text());
+        if (StringUtils.hasText(text)) {
+            int titleLevel = getTitleLevel(paragraph.getLvl());
+            return new ParagraphEntryImpl(text, titleLevel);
+        }
+        return new ParagraphEntryImpl("", 0);
+    }
+
+    private String escapeText(String text) {
+        return text.replaceAll("\r", "\n");
+    }
+
+    private boolean hasPicture(PicturesTable picturesTable, Paragraph paragraph) {
+        for (int i = 0; i < paragraph.numCharacterRuns(); i++) {
+            CharacterRun characterRun = paragraph.getCharacterRun(i);
+            if (picturesTable.hasPicture(characterRun)) {
+                return true;
+            }
+        }
         return false;
     }
 
-    private boolean inTable(Paragraph paragraph) {
+    private boolean inTable(List<TableEntry> tables, Paragraph paragraph) {
+        if (!paragraph.isInTable()) {
+            for (TableEntry table : tables) {
+                if (paragraph.getStartOffset() >= table.getStartOffset() &&
+                    paragraph.getEndOffset() <= table.getEndOffset()) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
     private int getTitleLevel(int level) {
-        boolean isLevelSupported = level >= 0 && level < 6;
-        return isLevelSupported ? level + 1 : 0;
-    }
-
-    private boolean isTitle(int titleLevel) {
-        return titleLevel > 0;
-    }
-
-    @Override
-    public Article getArticle() {
-        return new ArticleImpl(parts);
-    }
-
-    @Override
-    public void close() throws IOException {
-        document.close();
+        boolean isAvailableLevel = level >= 0 && level < 6;
+        return isAvailableLevel ? level + 1 : 0;
     }
 }

@@ -2,7 +2,7 @@ package com.github.verils.transdoc.core.model;
 
 import java.util.List;
 
-public interface TextParagraph extends Part {
+public interface TextParagraphEntry extends ParagraphEntry {
 
     List<TextPiece> getTextPieces();
 }

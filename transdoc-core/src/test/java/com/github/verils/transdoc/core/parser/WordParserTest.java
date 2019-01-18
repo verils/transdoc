@@ -1,7 +1,7 @@
 package com.github.verils.transdoc.core.parser;
 
 import com.github.verils.transdoc.core.model.WordDocument;
-import com.github.verils.transdoc.core.parser.doc.DocWordDocument;
+import com.github.verils.transdoc.core.parser.doc.WordDocumentImpl;
 import org.junit.Test;
 
 import java.io.InputStream;
@@ -14,7 +14,7 @@ public class WordParserTest {
     public void testParseDoc() {
         InputStream input = WordParserTest.class.getResourceAsStream("/test.doc");
         WordDocument document = WordParser.parse(input);
-        assertTrue(document instanceof DocWordDocument);
+        assertTrue(document instanceof WordDocumentImpl);
     }
 
 //    @Test

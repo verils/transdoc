@@ -1,22 +1,17 @@
 package com.github.verils.transdoc.core.parser;
 
-import com.github.verils.transdoc.core.model.Article;
+import com.github.verils.transdoc.core.model.WordDocument;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 class DocxParser extends WordParser {
 
     DocxParser(InputStream source) {
+        throw new UnsupportedOperationException("Not implemented");
     }
 
     @Override
-    public Article getArticle() {
+    public WordDocument parse() {
         return null;
-    }
-
-    @Override
-    public void close() throws IOException {
-
     }
 }

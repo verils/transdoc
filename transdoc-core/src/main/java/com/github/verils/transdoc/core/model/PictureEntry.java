@@ -1,6 +1,6 @@
 package com.github.verils.transdoc.core.model;
 
-public interface PictureEntry extends Part {
+public interface PictureEntry extends Entry {
 
     int getId();
 
@@ -11,5 +11,4 @@ public interface PictureEntry extends Part {
     int getDataOffset();
 
     byte[] getData();
-
 }

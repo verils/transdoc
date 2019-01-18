@@ -1,29 +1,22 @@
 package com.github.verils.transdoc.core.parser;
 
-import com.github.verils.transdoc.core.model.*;
+import com.github.verils.transdoc.core.model.WordDocument;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
-public abstract class WordParser implements Closeable {
+public abstract class WordParser {
 
     public static WordDocument parse(InputStream input) {
         try {
-            return new DocParser(input).getDocument();
+            return new DocParser(input).parse();
         } catch (IllegalArgumentException e) {
-            return new DocxParser(input).getDocument();
+            return new DocxParser(input).parse();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public abstract WordDocument getDocument();
-
-    public abstract List<PictureEntry> getPictures();
-
-    public abstract List<TableEntry> getTables();
-
-    public abstract List<Entry> getEntries();
+    public abstract WordDocument parse() throws IOException;
 }
