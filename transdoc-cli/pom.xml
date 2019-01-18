@@ -10,8 +10,6 @@
     <name>transdoc-cli</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>1.8</java.version>
-        <transdoc-core.version>0.1.0-SNAPSHOT</transdoc-core.version>
     </properties>
 
     <dependencies>
@@ -19,7 +17,7 @@
         <dependency>
             <groupId>com.github.verils.transdoc</groupId>
             <artifactId>transdoc-core</artifactId>
-            <version>${transdoc-core.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <!-- Junit4 -->
