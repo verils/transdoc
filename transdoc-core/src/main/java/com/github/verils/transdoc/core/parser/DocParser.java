@@ -1,6 +1,7 @@
 package com.github.verils.transdoc.core.parser;
 
 import com.github.verils.transdoc.core.model.*;
+import com.github.verils.transdoc.core.model.TableCell;
 import com.github.verils.transdoc.core.parser.doc.*;
 import com.github.verils.transdoc.core.util.StringUtils;
 import org.apache.poi.hwpf.HWPFDocument;
@@ -83,17 +84,25 @@ class DocParser extends WordParser {
         PicturesTable picturesTable = hwpfDocument.getPicturesTable();
         Range documentRange = hwpfDocument.getRange();
         int pictureIndex = 0, tableIndex = 0;
+        boolean lastParagraphInTable = false;
         for (int i = 0; i < documentRange.numParagraphs(); i++) {
             Paragraph paragraph = documentRange.getParagraph(i);
             if (hasPicture(picturesTable, paragraph)) {
                 PicturePart pictureEntry = pictures.get(pictureIndex++);
                 entries.add(pictureEntry);
+                lastParagraphInTable = false;
             } else if (inTable(tables, paragraph)) {
-                TablePart tableEntry = tables.get(tableIndex++);
-                entries.add(tableEntry);
+                if (!lastParagraphInTable) {
+                    TablePart tableEntry = tables.get(tableIndex++);
+                    entries.add(tableEntry);
+                }
+                lastParagraphInTable = true;
             } else {
                 ParagraphPart paragraphEntry = createParagraphEntry(paragraph);
-                entries.add(paragraphEntry);
+                if (paragraphEntry != null) {
+                    entries.add(paragraphEntry);
+                }
+                lastParagraphInTable = false;
             }
         }
         return entries;
@@ -116,35 +125,37 @@ class DocParser extends WordParser {
         for (int i = 0; i < rows; i++) {
             TableRow row = table.getRow(i);
             for (int j = 0; j < row.numCells(); j++) {
-                TableCell cell = row.getCell(j);
-                TableCellPart tableCellEntry = createTableCellEntry(cell);
+                org.apache.poi.hwpf.usermodel.TableCell cell = row.getCell(j);
+                TableCell tableCellEntry = createTableCellEntry(cell);
                 tableEntry.setCell(i, j, tableCellEntry);
             }
         }
         return tableEntry;
     }
 
-    private TableCellPart createTableCellEntry(TableCell cell) {
+    private TableCell createTableCellEntry(org.apache.poi.hwpf.usermodel.TableCell cell) {
         List<Part> entries = new ArrayList<Part>();
         for (int i = 0; i < cell.numParagraphs(); i++) {
             Paragraph paragraph = cell.getParagraph(i);
             ParagraphPart entry = createParagraphEntry(paragraph);
             entries.add(entry);
         }
-        return new TableCellPartImpl(entries);
+        return new TableCellImpl(entries);
     }
 
     private ParagraphPart createParagraphEntry(Paragraph paragraph) {
-        String text = escapeText(paragraph.text());
+        String text = paragraph.text();
         if (StringUtils.hasText(text)) {
             int titleLevel = getTitleLevel(paragraph.getLvl());
-            return new ParagraphPartImpl(text, titleLevel);
+            if (isTitle(titleLevel)) {
+                text = escapeText(text);
+                return new ParagraphPartImpl(text, titleLevel);
+            } else {
+                List<TextPiece> textPieces = getTextPieces(paragraph);
+                return new ParagraphPartImpl(textPieces);
+            }
         }
-        return new ParagraphPartImpl("", 0);
-    }
-
-    private String escapeText(String text) {
-        return text.replaceAll("\r", "\n");
+        return null;
     }
 
     private boolean hasPicture(PicturesTable picturesTable, Paragraph paragraph) {
@@ -158,7 +169,7 @@ class DocParser extends WordParser {
     }
 
     private boolean inTable(List<TablePart> tables, Paragraph paragraph) {
-        if (!paragraph.isInTable()) {
+        if (paragraph.isInTable()) {
             for (TablePart table : tables) {
                 if (paragraph.getStartOffset() >= table.getStartOffset() &&
                     paragraph.getEndOffset() <= table.getEndOffset()) {
@@ -169,8 +180,39 @@ class DocParser extends WordParser {
         return false;
     }
 
+    private String escapeText(String text) {
+        return Range.stripFields(text)
+            .replaceAll("\1|\7|\11|\19|\20|\21|\r|HYPERLINK \".+\"|FORMTEXT", "");
+    }
+
     private int getTitleLevel(int level) {
         boolean isAvailableLevel = level >= 0 && level < 6;
         return isAvailableLevel ? level + 1 : 0;
+    }
+
+    private boolean isTitle(int titleLevel) {
+        return titleLevel > 0;
+    }
+
+    private List<TextPiece> getTextPieces(Paragraph paragraph) {
+        int numCharacterRuns = paragraph.numCharacterRuns();
+        List<TextPiece> textPieces = new ArrayList<TextPiece>(numCharacterRuns);
+        for (int i = 0; i < numCharacterRuns; i++) {
+            CharacterRun characterRun = paragraph.getCharacterRun(i);
+
+            String text = characterRun.text();
+            text = escapeText(text);
+
+            TextPiece.Style style = TextPiece.Style.NONE;
+            if (characterRun.isBold()) {
+                style = TextPiece.Style.BOLD;
+            } else if (characterRun.isItalic()) {
+                style = TextPiece.Style.ITALIC;
+            }
+
+            TextPiece textPiece = new TextPieceImpl(text, style);
+            textPieces.add(textPiece);
+        }
+        return textPieces;
     }
 }

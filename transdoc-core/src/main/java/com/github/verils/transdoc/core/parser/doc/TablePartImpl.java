@@ -1,6 +1,6 @@
 package com.github.verils.transdoc.core.parser.doc;
 
-import com.github.verils.transdoc.core.model.TableCellPart;
+import com.github.verils.transdoc.core.model.TableCell;
 import com.github.verils.transdoc.core.model.TablePart;
 
 public class TablePartImpl implements TablePart {
@@ -13,14 +13,14 @@ public class TablePartImpl implements TablePart {
 
     private final int cols;
 
-    private final TableCellPart[][] matrix;
+    private final TableCell[][] matrix;
 
     public TablePartImpl(int startOffset, int endOffset, int rows, int cols) {
         this.startOffset = startOffset;
         this.endOffset = endOffset;
         this.rows = rows;
         this.cols = cols;
-        this.matrix = new TableCellPart[rows][cols];
+        this.matrix = new TableCell[rows][cols];
     }
 
     @Override
@@ -39,11 +39,11 @@ public class TablePartImpl implements TablePart {
     }
 
     @Override
-    public TableCellPart getCell(int row, int col) {
+    public TableCell getCell(int row, int col) {
         return matrix[row][col];
     }
 
-    public void setCell(int row, int col, TableCellPart tableCellEntry) {
+    public void setCell(int row, int col, TableCell tableCellEntry) {
         matrix[row][col] = tableCellEntry;
     }
 }

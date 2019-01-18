@@ -8,5 +8,5 @@ public interface TablePart extends Part {
 
     boolean isSingleCellTable();
 
-    TableCellPart getCell(int row, int col);
+    TableCell getCell(int row, int col);
 }

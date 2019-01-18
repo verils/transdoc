@@ -18,18 +18,24 @@ public class MarkdownConverter implements Converter {
     }
 
     private String convertPart(Part part) {
-        if (part instanceof TextParagraphPart) {
-            return convert((TextParagraphPart) part);
-        } else if (part instanceof TitleParagraphPart) {
-            return convert((TitleParagraphPart) part);
+        if (part instanceof ParagraphPart) {
+            return convert((ParagraphPart) part);
         } else {
             return EMPTY_STRING;
         }
     }
 
-    private String convert(TextParagraphPart textParagraph) {
+    private String convert(ParagraphPart paragraph) {
+        if (paragraph.isTitle()) {
+            return convertTitle(paragraph);
+        } else {
+            return convertText(paragraph);
+        }
+    }
+
+    private String convertTitle(ParagraphPart paragraph) {
         StringBuilder builder = new StringBuilder();
-        for (TextPiece textPiece : textParagraph.getTextPieces()) {
+        for (TextPiece textPiece : paragraph.getTextPieces()) {
             String text = convert(textPiece);
             builder.append(text);
         }
@@ -47,28 +53,16 @@ public class MarkdownConverter implements Converter {
         }
     }
 
-    private String convert(TitleParagraphPart titleParagraph) {
-        String text = titleParagraph.getText();
-        int level = titleParagraph.getLevel();
-        if (level > 0) {
+    private String convertText(ParagraphPart paragraph) {
+        String text = paragraph.getText();
+        int titleLevel = paragraph.getTitleLevel();
+        if (titleLevel > 0) {
             StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < level; i++) {
+            for (int i = 0; i < titleLevel; i++) {
                 builder.append("#");
             }
             return builder.append(" ").append(text).toString();
         }
         return text;
-    }
-
-    private String joinLine(String origin, String append) {
-        return join(origin, append, "\n");
-    }
-
-    private String joinText(String origin, String append) {
-        return join(origin, append, EMPTY_STRING);
-    }
-
-    private String join(String origin, String append, String sep) {
-        return origin + sep + append;
     }
 }
