@@ -1,30 +1,37 @@
 package com.github.verils.transdoc.core;
 
-import com.github.verils.transdoc.core.model.Article;
+import com.github.verils.transdoc.core.model.WordDocument;
 import com.github.verils.transdoc.core.parser.WordParser;
 import com.github.verils.transdoc.core.util.Assert;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 
 public class Transdoc {
 
-    public static void parse(Converter converter, InputStream input, OutputStream output) {
-        OutputStreamWriter writer = new OutputStreamWriter(output, StandardCharsets.UTF_8);
-        parse(converter, input, writer);
+    private static final Charset UTF8 = Charset.forName("UTF-8");
+
+    private final Converter converter;
+
+    public Transdoc(Converter converter) {
+        Assert.notNull("Converter required.", converter);
+        this.converter = converter;
     }
 
-    public static void parse(Converter converter, InputStream input, Writer writer) {
-        Assert.notNull("Converter required.", converter);
+    public void transform(InputStream input, OutputStream output) {
+        transform(input, new OutputStreamWriter(output, UTF8));
+    }
+
+    public void transform(InputStream input, Writer writer) {
         Assert.notNull("Word document source required.", input);
         Assert.notNull("Output destination required.", writer);
 
         WordParser parser = WordParser.parse(input);
-        Article article = parser.getArticle();
+        WordDocument article = parser.getDocument();
 
-        String formattedContent = converter.convert(article);
+        String content = converter.convert(article);
 
         PrintWriter printWriter = new PrintWriter(writer, true);
-        printWriter.println(formattedContent);
+        printWriter.println(content);
     }
 }

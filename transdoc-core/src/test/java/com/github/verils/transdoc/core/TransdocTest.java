@@ -1,5 +1,6 @@
 package com.github.verils.transdoc.core;
 
+import com.github.verils.transdoc.core.model.WordDocument;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,43 +16,45 @@ import static org.mockito.Mockito.when;
 
 public class TransdocTest {
 
-    private Converter converter = mock(Converter.class);
+    private Transdoc transdoc;
+    private InputStream docResource;
+    private InputStream docxResource;
 
     @Before
     public void setUp() {
-        when(converter.convert(any())).thenReturn("test");
+        Converter converter = mock(Converter.class);
+        when(converter.convert(any(WordDocument.class))).thenReturn("test");
+
+        transdoc = new Transdoc(converter);
+        docResource = TransdocTest.class.getResourceAsStream("/test.doc");
+        docxResource = TransdocTest.class.getResourceAsStream("/test.doc");
     }
 
     @Test
     public void testDocToStream() {
-
-        InputStream input = TransdocTest.class.getResourceAsStream("/test.doc");
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        Transdoc.parse(converter, input, output);
+        transdoc.transform(docResource, output);
         assertEquals("test\n", new String(output.toByteArray()));
     }
 
     @Test
     public void testDocxToStream() {
-        InputStream input = TransdocTest.class.getResourceAsStream("/test.docx");
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        Transdoc.parse(converter, input, output);
+        transdoc.transform(docxResource, output);
         assertEquals("test\n", new String(output.toByteArray()));
     }
 
     @Test
     public void testDocToWriter() {
-        InputStream input = TransdocTest.class.getResourceAsStream("/test.doc");
         StringWriter writer = new StringWriter();
-        Transdoc.parse(converter, input, writer);
+        transdoc.transform(docResource, writer);
         assertEquals("test\n", writer.toString());
     }
 
     @Test
     public void testDocxToWriter() {
-        InputStream input = TransdocTest.class.getResourceAsStream("/test.docx");
         StringWriter writer = new StringWriter();
-        Transdoc.parse(converter, input, writer);
+        transdoc.transform(docxResource, writer);
         assertEquals("test\n", writer.toString());
     }
 }
