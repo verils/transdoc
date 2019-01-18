@@ -9,7 +9,7 @@ public class MarkdownConverter implements Converter {
     @Override
     public String convert(WordDocument article) {
         StringBuilder builder = new StringBuilder();
-//        for (Entry part : article.getParts()) {
+//        for (Part part : article.getParts()) {
 //            String mdParagraph = convertPart(part);
 //            builder.append(mdParagraph);
 //        }
@@ -17,17 +17,17 @@ public class MarkdownConverter implements Converter {
         return null;
     }
 
-    private String convertPart(Entry entry) {
-        if (entry instanceof TextParagraphEntry) {
-            return convert((TextParagraphEntry) entry);
-        } else if (entry instanceof TitleParagraphEntry) {
-            return convert((TitleParagraphEntry) entry);
+    private String convertPart(Part part) {
+        if (part instanceof TextParagraphPart) {
+            return convert((TextParagraphPart) part);
+        } else if (part instanceof TitleParagraphPart) {
+            return convert((TitleParagraphPart) part);
         } else {
             return EMPTY_STRING;
         }
     }
 
-    private String convert(TextParagraphEntry textParagraph) {
+    private String convert(TextParagraphPart textParagraph) {
         StringBuilder builder = new StringBuilder();
         for (TextPiece textPiece : textParagraph.getTextPieces()) {
             String text = convert(textPiece);
@@ -47,7 +47,7 @@ public class MarkdownConverter implements Converter {
         }
     }
 
-    private String convert(TitleParagraphEntry titleParagraph) {
+    private String convert(TitleParagraphPart titleParagraph) {
         String text = titleParagraph.getText();
         int level = titleParagraph.getLevel();
         if (level > 0) {

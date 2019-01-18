@@ -4,9 +4,9 @@ import java.util.List;
 
 public interface WordDocument {
 
-    List<PictureEntry> getPictures();
+    List<PicturePart> getPictures();
 
-    List<TableEntry> getTables();
+    List<TablePart> getTables();
 
-    List<Entry> getEntries();
+    List<Part> getEntries();
 }

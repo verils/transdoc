@@ -1,44 +1,43 @@
 package com.github.verils.transdoc.core.parser.doc;
 
-import com.github.verils.transdoc.core.model.Entry;
-import com.github.verils.transdoc.core.model.PictureEntry;
-import com.github.verils.transdoc.core.model.TableEntry;
-import com.github.verils.transdoc.core.model.WordDocument;
+import com.github.verils.transdoc.core.model.*;
+import com.github.verils.transdoc.core.model.Part;
+import com.github.verils.transdoc.core.model.PicturePart;
 
 import java.util.List;
 
 public class WordDocumentImpl implements WordDocument {
 
-    private List<PictureEntry> pictures;
+    private List<PicturePart> pictures;
 
-    private List<TableEntry> tables;
+    private List<TablePart> tables;
 
-    private List<Entry> entries;
+    private List<Part> entries;
 
     @Override
-    public List<PictureEntry> getPictures() {
+    public List<PicturePart> getPictures() {
         return pictures;
     }
 
-    public void setPictures(List<PictureEntry> pictures) {
+    public void setPictures(List<PicturePart> pictures) {
         this.pictures = pictures;
     }
 
     @Override
-    public List<TableEntry> getTables() {
+    public List<TablePart> getTables() {
         return tables;
     }
 
-    public void setTables(List<TableEntry> tables) {
+    public void setTables(List<TablePart> tables) {
         this.tables = tables;
     }
 
     @Override
-    public List<Entry> getEntries() {
+    public List<Part> getEntries() {
         return entries;
     }
 
-    public void setEntries(List<Entry> entries) {
+    public void setEntries(List<Part> entries) {
         this.entries = entries;
     }
 }

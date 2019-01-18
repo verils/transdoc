@@ -1,6 +1,6 @@
 package com.github.verils.transdoc.core.model;
 
-public interface TableEntry extends Entry {
+public interface TablePart extends Part {
 
     int getStartOffset();
 
@@ -8,5 +8,5 @@ public interface TableEntry extends Entry {
 
     boolean isSingleCellTable();
 
-    TableCellEntry getCell(int row, int col);
+    TableCellPart getCell(int row, int col);
 }

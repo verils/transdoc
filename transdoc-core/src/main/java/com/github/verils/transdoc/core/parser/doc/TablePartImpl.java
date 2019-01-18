@@ -1,9 +1,9 @@
 package com.github.verils.transdoc.core.parser.doc;
 
-import com.github.verils.transdoc.core.model.TableCellEntry;
-import com.github.verils.transdoc.core.model.TableEntry;
+import com.github.verils.transdoc.core.model.TableCellPart;
+import com.github.verils.transdoc.core.model.TablePart;
 
-public class TableEntryImpl implements TableEntry {
+public class TablePartImpl implements TablePart {
 
     private final int startOffset;
 
@@ -13,14 +13,14 @@ public class TableEntryImpl implements TableEntry {
 
     private final int cols;
 
-    private final TableCellEntry[][] matrix;
+    private final TableCellPart[][] matrix;
 
-    public TableEntryImpl(int startOffset, int endOffset, int rows, int cols) {
+    public TablePartImpl(int startOffset, int endOffset, int rows, int cols) {
         this.startOffset = startOffset;
         this.endOffset = endOffset;
         this.rows = rows;
         this.cols = cols;
-        this.matrix = new TableCellEntry[rows][cols];
+        this.matrix = new TableCellPart[rows][cols];
     }
 
     @Override
@@ -39,11 +39,11 @@ public class TableEntryImpl implements TableEntry {
     }
 
     @Override
-    public TableCellEntry getCell(int row, int col) {
+    public TableCellPart getCell(int row, int col) {
         return matrix[row][col];
     }
 
-    public void setCell(int row, int col, TableCellEntry tableCellEntry) {
+    public void setCell(int row, int col, TableCellPart tableCellEntry) {
         matrix[row][col] = tableCellEntry;
     }
 }

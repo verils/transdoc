@@ -47,7 +47,7 @@ public class Table extends Part {
 	}
 
 	public String toString() {
-		return "TableEntry [rownum=" + this.rownum + ", colnum=" + this.colnum + ", codeBlock="
+		return "TablePart [rownum=" + this.rownum + ", colnum=" + this.colnum + ", codeBlock="
 				+ this.isBlock + ", data=" + Arrays.toString(this.data) + "]";
 	}
 }

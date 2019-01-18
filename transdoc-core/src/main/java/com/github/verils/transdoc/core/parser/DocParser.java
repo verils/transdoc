@@ -24,9 +24,9 @@ class DocParser extends WordParser {
     public WordDocument parse() throws IOException {
         HWPFDocument hwpfDocument = new HWPFDocument(source);
 
-        List<PictureEntry> pictureEntries = parsePictures(hwpfDocument);
-        List<TableEntry> tableEntries = parseTables(hwpfDocument);
-        List<Entry> entries = parseParagraphs(hwpfDocument, pictureEntries, tableEntries);
+        List<PicturePart> pictureEntries = parsePictures(hwpfDocument);
+        List<TablePart> tableEntries = parseTables(hwpfDocument);
+        List<Part> entries = parseParagraphs(hwpfDocument, pictureEntries, tableEntries);
 
         hwpfDocument.close();
 
@@ -43,8 +43,8 @@ class DocParser extends WordParser {
      * @param hwpfDocument hwpfDocument
      * @return 图片列表
      */
-    private List<PictureEntry> parsePictures(HWPFDocument hwpfDocument) {
-        List<PictureEntry> pictureEntries = new ArrayList<PictureEntry>();
+    private List<PicturePart> parsePictures(HWPFDocument hwpfDocument) {
+        List<PicturePart> pictureEntries = new ArrayList<PicturePart>();
         PicturesTable picturesTable = hwpfDocument.getPicturesTable();
         List<Picture> allPictures = picturesTable.getAllPictures();
         for (int i = 0; i < allPictures.size(); i++) {
@@ -60,8 +60,8 @@ class DocParser extends WordParser {
      * @param hwpfDocument hwpfDocument
      * @return 表格列表
      */
-    private List<TableEntry> parseTables(HWPFDocument hwpfDocument) {
-        List<TableEntry> tables = new ArrayList<TableEntry>();
+    private List<TablePart> parseTables(HWPFDocument hwpfDocument) {
+        List<TablePart> tables = new ArrayList<TablePart>();
         TableIterator tableIterator = new TableIterator(hwpfDocument.getRange());
         while (tableIterator.hasNext()) {
             Table table = tableIterator.next();
@@ -78,29 +78,29 @@ class DocParser extends WordParser {
      * @param tables       表格列表
      * @return 元素列表
      */
-    private List<Entry> parseParagraphs(HWPFDocument hwpfDocument, List<PictureEntry> pictures, List<TableEntry> tables) {
-        List<Entry> entries = new ArrayList<Entry>();
+    private List<Part> parseParagraphs(HWPFDocument hwpfDocument, List<PicturePart> pictures, List<TablePart> tables) {
+        List<Part> entries = new ArrayList<Part>();
         PicturesTable picturesTable = hwpfDocument.getPicturesTable();
         Range documentRange = hwpfDocument.getRange();
         int pictureIndex = 0, tableIndex = 0;
         for (int i = 0; i < documentRange.numParagraphs(); i++) {
             Paragraph paragraph = documentRange.getParagraph(i);
             if (hasPicture(picturesTable, paragraph)) {
-                PictureEntry pictureEntry = pictures.get(pictureIndex++);
+                PicturePart pictureEntry = pictures.get(pictureIndex++);
                 entries.add(pictureEntry);
             } else if (inTable(tables, paragraph)) {
-                TableEntry tableEntry = tables.get(tableIndex++);
+                TablePart tableEntry = tables.get(tableIndex++);
                 entries.add(tableEntry);
             } else {
-                ParagraphEntry paragraphEntry = createParagraphEntry(paragraph);
+                ParagraphPart paragraphEntry = createParagraphEntry(paragraph);
                 entries.add(paragraphEntry);
             }
         }
         return entries;
     }
 
-    private PictureEntry createPictureEntry(int index, Picture picture) {
-        PictureEntryImpl pictureEntry = new PictureEntryImpl();
+    private PicturePart createPictureEntry(int index, Picture picture) {
+        PicturePartImpl pictureEntry = new PicturePartImpl();
         pictureEntry.setId(index);
         pictureEntry.setName(picture.suggestFullFileName());
         pictureEntry.setExtension(picture.suggestFileExtension());
@@ -109,38 +109,38 @@ class DocParser extends WordParser {
         return pictureEntry;
     }
 
-    private TableEntry createTableEntry(Table table) {
+    private TablePart createTableEntry(Table table) {
         int rows = table.numRows();
         int cols = table.getRow(0).numCells();
-        TableEntryImpl tableEntry = new TableEntryImpl(table.getStartOffset(), table.getEndOffset(), rows, cols);
+        TablePartImpl tableEntry = new TablePartImpl(table.getStartOffset(), table.getEndOffset(), rows, cols);
         for (int i = 0; i < rows; i++) {
             TableRow row = table.getRow(i);
             for (int j = 0; j < row.numCells(); j++) {
                 TableCell cell = row.getCell(j);
-                TableCellEntry tableCellEntry = createTableCellEntry(cell);
+                TableCellPart tableCellEntry = createTableCellEntry(cell);
                 tableEntry.setCell(i, j, tableCellEntry);
             }
         }
         return tableEntry;
     }
 
-    private TableCellEntry createTableCellEntry(TableCell cell) {
-        List<Entry> entries = new ArrayList<Entry>();
+    private TableCellPart createTableCellEntry(TableCell cell) {
+        List<Part> entries = new ArrayList<Part>();
         for (int i = 0; i < cell.numParagraphs(); i++) {
             Paragraph paragraph = cell.getParagraph(i);
-            ParagraphEntry entry = createParagraphEntry(paragraph);
+            ParagraphPart entry = createParagraphEntry(paragraph);
             entries.add(entry);
         }
-        return new TableCellEntryImpl(entries);
+        return new TableCellPartImpl(entries);
     }
 
-    private ParagraphEntry createParagraphEntry(Paragraph paragraph) {
+    private ParagraphPart createParagraphEntry(Paragraph paragraph) {
         String text = escapeText(paragraph.text());
         if (StringUtils.hasText(text)) {
             int titleLevel = getTitleLevel(paragraph.getLvl());
-            return new ParagraphEntryImpl(text, titleLevel);
+            return new ParagraphPartImpl(text, titleLevel);
         }
-        return new ParagraphEntryImpl("", 0);
+        return new ParagraphPartImpl("", 0);
     }
 
     private String escapeText(String text) {
@@ -157,9 +157,9 @@ class DocParser extends WordParser {
         return false;
     }
 
-    private boolean inTable(List<TableEntry> tables, Paragraph paragraph) {
+    private boolean inTable(List<TablePart> tables, Paragraph paragraph) {
         if (!paragraph.isInTable()) {
-            for (TableEntry table : tables) {
+            for (TablePart table : tables) {
                 if (paragraph.getStartOffset() >= table.getStartOffset() &&
                     paragraph.getEndOffset() <= table.getEndOffset()) {
                     return true;

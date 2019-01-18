@@ -1,6 +1,6 @@
 package com.github.verils.transdoc.core.model;
 
-public interface TitleParagraphEntry extends ParagraphEntry {
+public interface TitleParagraphPart extends ParagraphPart {
 
     String getText();
 

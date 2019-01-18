@@ -1,14 +1,14 @@
 package com.github.verils.transdoc.core.parser.doc;
 
-import com.github.verils.transdoc.core.model.ParagraphEntry;
+import com.github.verils.transdoc.core.model.ParagraphPart;
 
-public class ParagraphEntryImpl implements ParagraphEntry {
+public class ParagraphPartImpl implements ParagraphPart {
 
     private final String text;
 
     private final int titleLevel;
 
-    public ParagraphEntryImpl(String text, int titleLevel) {
+    public ParagraphPartImpl(String text, int titleLevel) {
         this.text = text;
         this.titleLevel = titleLevel;
     }

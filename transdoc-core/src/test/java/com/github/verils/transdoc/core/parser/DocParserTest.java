@@ -1,8 +1,8 @@
 package com.github.verils.transdoc.core.parser;
 
-import com.github.verils.transdoc.core.model.Entry;
-import com.github.verils.transdoc.core.model.PictureEntry;
-import com.github.verils.transdoc.core.model.TableEntry;
+import com.github.verils.transdoc.core.model.Part;
+import com.github.verils.transdoc.core.model.PicturePart;
+import com.github.verils.transdoc.core.model.TablePart;
 import com.github.verils.transdoc.core.model.WordDocument;
 import com.github.verils.transdoc.core.parser.doc.WordDocumentImpl;
 import org.junit.Before;
@@ -29,18 +29,18 @@ public class DocParserTest {
         WordDocument document = docParser.parse();
         assertTrue(document instanceof WordDocumentImpl);
 
-        List<PictureEntry> pictures = document.getPictures();
+        List<PicturePart> pictures = document.getPictures();
         assertTrue(pictures.isEmpty());
 
-        List<TableEntry> tables = document.getTables();
+        List<TablePart> tables = document.getTables();
         assertEquals(8, tables.size());
 
-        List<Entry> entries = document.getEntries();
+        List<Part> entries = document.getEntries();
         assertFalse(entries.isEmpty());
 
-        for (Entry entry : entries) {
-            System.out.println(entry.toString());
-            assertNotNull(entry);
+        for (Part part : entries) {
+            System.out.println(part.toString());
+            assertNotNull(part);
         }
     }
 }

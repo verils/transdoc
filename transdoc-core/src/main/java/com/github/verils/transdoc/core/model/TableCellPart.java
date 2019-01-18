@@ -1,6 +1,6 @@
 package com.github.verils.transdoc.core.model;
 
-public interface TableCellEntry extends Entry {
+public interface TableCellPart extends Part {
 
 
 }

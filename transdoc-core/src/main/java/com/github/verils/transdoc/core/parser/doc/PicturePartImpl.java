@@ -1,8 +1,8 @@
 package com.github.verils.transdoc.core.parser.doc;
 
-import com.github.verils.transdoc.core.model.PictureEntry;
+import com.github.verils.transdoc.core.model.PicturePart;
 
-public class PictureEntryImpl implements PictureEntry {
+public class PicturePartImpl implements PicturePart {
 
     private int id;
 
