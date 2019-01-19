@@ -1,5 +1,6 @@
 package com.github.verils.transdoc.core;
 
+import com.github.verils.transdoc.core.converter.Converter;
 import com.github.verils.transdoc.core.model.WordDocument;
 import org.junit.Before;
 import org.junit.Test;

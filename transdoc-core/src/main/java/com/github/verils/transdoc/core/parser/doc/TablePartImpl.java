@@ -23,14 +23,22 @@ public class TablePartImpl implements TablePart {
         this.matrix = new TableCell[rows][cols];
     }
 
-    @Override
     public int getStartOffset() {
         return startOffset;
     }
 
-    @Override
     public int getEndOffset() {
         return endOffset;
+    }
+
+    @Override
+    public int getRows() {
+        return rows;
+    }
+
+    @Override
+    public int getCols() {
+        return cols;
     }
 
     @Override

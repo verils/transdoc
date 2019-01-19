@@ -7,9 +7,14 @@ import java.util.List;
 
 public class TableCellImpl implements TableCell {
 
-    private final List<Part> entries;
+    private final List<Part> parts;
 
-    public TableCellImpl(List<Part> entries) {
-        this.entries = entries;
+    public TableCellImpl(List<Part> parts) {
+        this.parts = parts;
+    }
+
+    @Override
+    public List<Part> getParts() {
+        return parts;
     }
 }

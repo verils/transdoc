@@ -1,5 +1,6 @@
 package com.github.verils.transdoc.core;
 
+import com.github.verils.transdoc.core.converter.Converter;
 import com.github.verils.transdoc.core.model.WordDocument;
 import com.github.verils.transdoc.core.parser.WordParser;
 import com.github.verils.transdoc.core.util.Assert;

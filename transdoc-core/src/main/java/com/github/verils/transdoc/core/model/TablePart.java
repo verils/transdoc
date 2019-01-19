@@ -2,9 +2,9 @@ package com.github.verils.transdoc.core.model;
 
 public interface TablePart extends Part {
 
-    int getStartOffset();
+    int getRows();
 
-    int getEndOffset();
+    int getCols();
 
     boolean isSingleCellTable();
 

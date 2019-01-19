@@ -1,4 +1,4 @@
-package com.github.verils.transdoc.core;
+package com.github.verils.transdoc.core.converter;
 
 import com.github.verils.transdoc.core.model.WordDocument;
 

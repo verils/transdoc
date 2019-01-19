@@ -165,8 +165,9 @@ class DocParser extends WordParser {
     private boolean inTable(List<TablePart> tables, Paragraph paragraph) {
         if (paragraph.isInTable()) {
             for (TablePart table : tables) {
-                if (paragraph.getStartOffset() >= table.getStartOffset() &&
-                    paragraph.getEndOffset() <= table.getEndOffset()) {
+                TablePartImpl tableImpl = (TablePartImpl) table;
+                if (paragraph.getStartOffset() >= tableImpl.getStartOffset() &&
+                    paragraph.getEndOffset() <= tableImpl.getEndOffset()) {
                     return true;
                 }
             }
