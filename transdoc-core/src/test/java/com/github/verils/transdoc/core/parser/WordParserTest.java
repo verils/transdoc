@@ -13,20 +13,20 @@ public class WordParserTest {
     @Test
     public void testParseDoc() {
         InputStream input = WordParserTest.class.getResourceAsStream("/test.doc");
-        WordDocument document = WordParser.parse(input);
+        WordDocument document = WordParser.parseDocument(input);
         assertTrue(document instanceof WordDocumentImpl);
     }
 
 //    @Test
 //    public void testParseDocx() throws IOException {
 //        InputStream input = WordParserTest.class.getResourceAsStream("/test.docx");
-//        WordParser parser = WordParser.parse(input);
+//        WordParser parser = WordParser.parseDocument(input);
 //        assertTrue(parser instanceof DocxParser);
 //    }
 
     @Test(expected = RuntimeException.class)
     public void testParseIllegalDoc() {
         InputStream input = WordParserTest.class.getResourceAsStream("/test");
-        WordParser.parse(input);
+        WordParser.parseDocument(input);
     }
 }

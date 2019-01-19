@@ -15,14 +15,8 @@ import java.util.List;
 
 class DocParser extends WordParser {
 
-    private final InputStream source;
-
-    DocParser(InputStream source) {
-        this.source = source;
-    }
-
     @Override
-    public WordDocument parse() throws IOException {
+    public WordDocument parse(InputStream source) throws IOException {
         HWPFDocument hwpfDocument = new HWPFDocument(source);
 
         List<PicturePart> pictureEntries = parsePictures(hwpfDocument);

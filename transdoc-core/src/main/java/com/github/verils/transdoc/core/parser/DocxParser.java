@@ -6,12 +6,8 @@ import java.io.InputStream;
 
 class DocxParser extends WordParser {
 
-    DocxParser(InputStream source) {
-        throw new UnsupportedOperationException("Not implemented");
-    }
-
     @Override
-    public WordDocument parse() {
-        return null;
+    public WordDocument parse(InputStream source) {
+        throw new UnsupportedOperationException("Not implemented");
     }
 }

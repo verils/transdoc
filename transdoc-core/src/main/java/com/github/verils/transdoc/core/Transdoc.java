@@ -26,7 +26,7 @@ public class Transdoc {
         Assert.notNull("Word document source required.", input);
         Assert.notNull("Output destination required.", writer);
 
-        WordDocument article = WordParser.parse(input);
+        WordDocument article = WordParser.parseDocument(input);
 
         String content = converter.convert(article);
 
