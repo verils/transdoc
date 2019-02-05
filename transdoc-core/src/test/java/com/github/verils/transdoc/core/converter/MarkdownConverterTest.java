@@ -39,7 +39,7 @@ public class MarkdownConverterTest {
         );
 
         String content = converter.convert(wordDocument);
-        System.out.println(content);
+//        System.out.println(content);
         assertNotNull(content);
     }
 

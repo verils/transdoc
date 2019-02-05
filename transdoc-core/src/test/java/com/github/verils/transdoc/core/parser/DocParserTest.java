@@ -17,8 +17,8 @@ public class DocParserTest {
 
     @Test
     public void testParse() throws IOException {
-        InputStream source = DocParserTest.class.getResourceAsStream("/test.doc");
-        WordDocument document = new DocParser().parse(source);
+        InputStream input = DocParserTest.class.getResourceAsStream("/test.doc");
+        WordDocument document = new DocParser(input).parse();
         assertTrue(document instanceof WordDocumentImpl);
 
         List<PicturePart> pictures = document.getPictures();

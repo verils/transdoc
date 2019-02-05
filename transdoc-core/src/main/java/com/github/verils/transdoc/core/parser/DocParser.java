@@ -15,15 +15,17 @@ import java.util.List;
 
 class DocParser extends WordParser {
 
+    private final HWPFDocument hwpfDocument;
+
+    DocParser(InputStream input) throws IOException {
+        this.hwpfDocument = new HWPFDocument(input);
+    }
+
     @Override
-    public WordDocument parse(InputStream source) throws IOException {
-        HWPFDocument hwpfDocument = new HWPFDocument(source);
-
-        List<PicturePart> pictureEntries = parsePictures(hwpfDocument);
-        List<TablePart> tableEntries = parseTables(hwpfDocument);
-        List<Part> entries = parseParagraphs(hwpfDocument, pictureEntries, tableEntries);
-
-        hwpfDocument.close();
+    public WordDocument parse() {
+        List<PicturePart> pictureEntries = parsePictures();
+        List<TablePart> tableEntries = parseTables();
+        List<Part> entries = parseParagraphs(pictureEntries, tableEntries);
 
         WordDocumentImpl docWordDocument = new WordDocumentImpl();
         docWordDocument.setPictures(pictureEntries);
@@ -35,10 +37,9 @@ class DocParser extends WordParser {
     /**
      * 解析图片
      *
-     * @param hwpfDocument hwpfDocument
      * @return 图片列表
      */
-    private List<PicturePart> parsePictures(HWPFDocument hwpfDocument) {
+    private List<PicturePart> parsePictures() {
         List<PicturePart> pictureEntries = new ArrayList<PicturePart>();
         PicturesTable picturesTable = hwpfDocument.getPicturesTable();
         List<Picture> allPictures = picturesTable.getAllPictures();
@@ -52,10 +53,9 @@ class DocParser extends WordParser {
     /**
      * 解析表格
      *
-     * @param hwpfDocument hwpfDocument
      * @return 表格列表
      */
-    private List<TablePart> parseTables(HWPFDocument hwpfDocument) {
+    private List<TablePart> parseTables() {
         List<TablePart> tables = new ArrayList<TablePart>();
         TableIterator tableIterator = new TableIterator(hwpfDocument.getRange());
         while (tableIterator.hasNext()) {
@@ -68,12 +68,11 @@ class DocParser extends WordParser {
     /**
      * 解析段落
      *
-     * @param hwpfDocument hwpfDocument
      * @param pictures     图片列表
      * @param tables       表格列表
      * @return 元素列表
      */
-    private List<Part> parseParagraphs(HWPFDocument hwpfDocument, List<PicturePart> pictures, List<TablePart> tables) {
+    private List<Part> parseParagraphs(List<PicturePart> pictures, List<TablePart> tables) {
         List<Part> entries = new ArrayList<Part>();
         PicturesTable picturesTable = hwpfDocument.getPicturesTable();
         Range documentRange = hwpfDocument.getRange();
@@ -209,5 +208,10 @@ class DocParser extends WordParser {
             textPieces.add(textPiece);
         }
         return textPieces;
+    }
+
+    @Override
+    public void close() throws IOException {
+        hwpfDocument.close();
     }
 }
