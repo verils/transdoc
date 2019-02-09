@@ -1,7 +1,6 @@
 package com.github.verils.transdoc.core.parser;
 
 import com.github.verils.transdoc.core.model.WordDocument;
-import com.github.verils.transdoc.core.parser.doc.WordDocumentImpl;
 import org.junit.Test;
 
 import java.io.InputStream;
@@ -14,15 +13,15 @@ public class WordParserTest {
     public void testParseDoc() {
         InputStream input = WordParserTest.class.getResourceAsStream("/test.doc");
         WordDocument document = WordParser.parseDocument(input);
-        assertTrue(document instanceof WordDocumentImpl);
+        assertTrue(document instanceof SimpleWordDocument);
     }
 
-//    @Test
-//    public void testParseDocx() throws IOException {
-//        InputStream input = WordParserTest.class.getResourceAsStream("/test.docx");
-//        WordParser parser = WordParser.parseDocument(input);
-//        assertTrue(parser instanceof DocxParser);
-//    }
+    @Test
+    public void testParseDocx() {
+        InputStream input = WordParserTest.class.getResourceAsStream("/test.docx");
+        WordDocument document = WordParser.parseDocument(input);
+        assertTrue(document instanceof SimpleWordDocument);
+    }
 
     @Test(expected = RuntimeException.class)
     public void testParseIllegalDoc() {

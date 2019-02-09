@@ -1,8 +1,7 @@
-package com.github.verils.transdoc.core.parser;
+package com.github.verils.transdoc.core.parser.doc;
 
 import com.github.verils.transdoc.core.model.*;
-import com.github.verils.transdoc.core.model.TableCell;
-import com.github.verils.transdoc.core.parser.doc.*;
+import com.github.verils.transdoc.core.parser.WordParser;
 import com.github.verils.transdoc.core.util.StringUtils;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.model.PicturesTable;
@@ -13,139 +12,110 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-class DocParser extends WordParser {
+public class DocParser extends WordParser {
 
     private final HWPFDocument hwpfDocument;
 
-    DocParser(InputStream input) throws IOException {
+    public DocParser(InputStream input) throws IOException {
         this.hwpfDocument = new HWPFDocument(input);
     }
 
     @Override
-    public WordDocument parse() {
-        List<PicturePart> pictureEntries = parsePictures();
-        List<TablePart> tableEntries = parseTables();
-        List<Part> entries = parseParagraphs(pictureEntries, tableEntries);
-
-        WordDocumentImpl docWordDocument = new WordDocumentImpl();
-        docWordDocument.setPictures(pictureEntries);
-        docWordDocument.setTables(tableEntries);
-        docWordDocument.setParts(entries);
-        return docWordDocument;
-    }
-
-    /**
-     * 解析图片
-     *
-     * @return 图片列表
-     */
-    private List<PicturePart> parsePictures() {
-        List<PicturePart> pictureEntries = new ArrayList<PicturePart>();
+    protected List<PicturePart> parsePictures() {
         PicturesTable picturesTable = hwpfDocument.getPicturesTable();
+        List<PicturePart> pictureParts = new ArrayList<PicturePart>();
         List<Picture> allPictures = picturesTable.getAllPictures();
-        for (int i = 0; i < allPictures.size(); i++) {
-            Picture picture = allPictures.get(i);
-            pictureEntries.add(createPictureEntry(i, picture));
+        for (Picture picture : allPictures) {
+            pictureParts.add(createPicturePart(picture));
         }
-        return pictureEntries;
+        return pictureParts;
     }
 
-    /**
-     * 解析表格
-     *
-     * @return 表格列表
-     */
-    private List<TablePart> parseTables() {
-        List<TablePart> tables = new ArrayList<TablePart>();
+    @Override
+    protected List<TablePart> parseTables() {
         TableIterator tableIterator = new TableIterator(hwpfDocument.getRange());
+        List<TablePart> tables = new ArrayList<TablePart>();
         while (tableIterator.hasNext()) {
             Table table = tableIterator.next();
-            tables.add(createTableEntry(table));
+            tables.add(createTablePart(table));
         }
         return tables;
     }
 
-    /**
-     * 解析段落
-     *
-     * @param pictures     图片列表
-     * @param tables       表格列表
-     * @return 元素列表
-     */
-    private List<Part> parseParagraphs(List<PicturePart> pictures, List<TablePart> tables) {
-        List<Part> entries = new ArrayList<Part>();
+    @Override
+    protected List<Part> parseParagraphs(List<PicturePart> pictures, List<TablePart> tables) {
         PicturesTable picturesTable = hwpfDocument.getPicturesTable();
         Range documentRange = hwpfDocument.getRange();
+        List<Part> parts = new ArrayList<Part>();
         int pictureIndex = 0, tableIndex = 0;
         boolean lastParagraphInTable = false;
         for (int i = 0; i < documentRange.numParagraphs(); i++) {
             Paragraph paragraph = documentRange.getParagraph(i);
             if (hasPicture(picturesTable, paragraph)) {
-                PicturePart pictureEntry = pictures.get(pictureIndex++);
-                entries.add(pictureEntry);
+                PicturePart picturePart = pictures.get(pictureIndex++);
+                parts.add(picturePart);
                 lastParagraphInTable = false;
             } else if (inTable(tables, paragraph)) {
                 if (!lastParagraphInTable) {
-                    TablePart tableEntry = tables.get(tableIndex++);
-                    entries.add(tableEntry);
+                    TablePart tablePart = tables.get(tableIndex++);
+                    parts.add(tablePart);
                 }
                 lastParagraphInTable = true;
             } else {
-                ParagraphPart paragraphEntry = createParagraphEntry(paragraph);
-                if (paragraphEntry != null) {
-                    entries.add(paragraphEntry);
+                ParagraphPart paragraphPart = createParagraphPart(paragraph);
+                if (paragraphPart != null) {
+                    parts.add(paragraphPart);
                 }
                 lastParagraphInTable = false;
             }
         }
-        return entries;
+        return parts;
     }
 
-    private PicturePart createPictureEntry(int index, Picture picture) {
-        PicturePartImpl pictureEntry = new PicturePartImpl();
-        pictureEntry.setId(index);
-        pictureEntry.setName(picture.suggestFullFileName());
-        pictureEntry.setExtension(picture.suggestFileExtension());
-        pictureEntry.setDataOffset(picture.getStartOffset());
-        pictureEntry.setData(picture.getContent());
-        return pictureEntry;
+    private PicturePart createPicturePart(Picture picture) {
+        DocPicturePart docPicturePart = new DocPicturePart();
+        docPicturePart.setName(picture.suggestFullFileName());
+        docPicturePart.setExtension(picture.suggestFileExtension());
+        docPicturePart.setData(picture.getContent());
+        docPicturePart.setDataOffset(picture.getStartOffset());
+        return docPicturePart;
     }
 
-    private TablePart createTableEntry(Table table) {
+    private TablePart createTablePart(Table table) {
         int rows = table.numRows();
         int cols = table.getRow(0).numCells();
-        TablePartImpl tableEntry = new TablePartImpl(table.getStartOffset(), table.getEndOffset(), rows, cols);
+        DocTablePart tablePart = new DocTablePart(rows, cols, table.getStartOffset(), table.getEndOffset());
         for (int i = 0; i < rows; i++) {
             TableRow row = table.getRow(i);
             for (int j = 0; j < row.numCells(); j++) {
-                org.apache.poi.hwpf.usermodel.TableCell cell = row.getCell(j);
-                TableCell tableCellEntry = createTableCellEntry(cell);
-                tableEntry.setCell(i, j, tableCellEntry);
+                TableCell cell = row.getCell(j);
+                TableCellPart tableCellPart = createTableCellPart(cell);
+                tablePart.setCell(i, j, tableCellPart);
             }
         }
-        return tableEntry;
+        return tablePart;
     }
 
-    private TableCell createTableCellEntry(org.apache.poi.hwpf.usermodel.TableCell cell) {
-        List<Part> entries = new ArrayList<Part>();
+    private TableCellPart createTableCellPart(TableCell cell) {
+        List<Part> parts = new ArrayList<Part>();
         for (int i = 0; i < cell.numParagraphs(); i++) {
             Paragraph paragraph = cell.getParagraph(i);
-            ParagraphPart entry = createParagraphEntry(paragraph);
-            entries.add(entry);
+            ParagraphPart paragraphPart = createParagraphPart(paragraph);
+            parts.add(paragraphPart);
         }
-        return new TableCellImpl(entries);
+        return new DocTableCellPart(parts);
     }
 
-    private ParagraphPart createParagraphEntry(Paragraph paragraph) {
+    private ParagraphPart createParagraphPart(Paragraph paragraph) {
         String text = paragraph.text();
         if (StringUtils.hasText(text)) {
-            int titleLevel = getTitleLevel(paragraph.getLvl());
+            int titleLevel = getTitleLevel(paragraph);
             if (isTitle(titleLevel)) {
                 text = escapeText(text);
-                return new ParagraphPartImpl(text, titleLevel);
+                return new DocParagraphPart(text, titleLevel);
             } else {
                 List<TextPiece> textPieces = getTextPieces(paragraph);
-                return new ParagraphPartImpl(textPieces);
+                return new DocParagraphPart(textPieces);
             }
         }
         return null;
@@ -164,7 +134,7 @@ class DocParser extends WordParser {
     private boolean inTable(List<TablePart> tables, Paragraph paragraph) {
         if (paragraph.isInTable()) {
             for (TablePart table : tables) {
-                TablePartImpl tableImpl = (TablePartImpl) table;
+                DocTablePart tableImpl = (DocTablePart) table;
                 if (paragraph.getStartOffset() >= tableImpl.getStartOffset() &&
                     paragraph.getEndOffset() <= tableImpl.getEndOffset()) {
                     return true;
@@ -174,18 +144,19 @@ class DocParser extends WordParser {
         return false;
     }
 
-    private String escapeText(String text) {
-        return Range.stripFields(text)
-            .replaceAll("\1|\7|\11|\19|\20|\21|\r|HYPERLINK \".+\"|FORMTEXT", "");
-    }
-
-    private int getTitleLevel(int level) {
+    private int getTitleLevel(Paragraph paragraph) {
+        int level = paragraph.getLvl();
         boolean isAvailableLevel = level >= 0 && level < 6;
         return isAvailableLevel ? level + 1 : 0;
     }
 
     private boolean isTitle(int titleLevel) {
         return titleLevel > 0;
+    }
+
+    private String escapeText(String text) {
+        return Range.stripFields(text)
+            .replaceAll("\1|\7|\11|\19|\20|\21|\r|HYPERLINK \".+\"|FORMTEXT", "");
     }
 
     private List<TextPiece> getTextPieces(Paragraph paragraph) {
@@ -204,7 +175,7 @@ class DocParser extends WordParser {
                 style = TextPiece.Style.ITALIC;
             }
 
-            TextPiece textPiece = new TextPieceImpl(text, style);
+            TextPiece textPiece = new DocTextPiece(text, style);
             textPieces.add(textPiece);
         }
         return textPieces;

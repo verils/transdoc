@@ -1,4 +1,4 @@
-package com.github.verils.transdoc.core.parser.doc;
+package com.github.verils.transdoc.core.parser;
 
 import com.github.verils.transdoc.core.model.*;
 import com.github.verils.transdoc.core.model.Part;
@@ -6,7 +6,7 @@ import com.github.verils.transdoc.core.model.PicturePart;
 
 import java.util.List;
 
-public class WordDocumentImpl implements WordDocument {
+public class SimpleWordDocument implements WordDocument {
 
     private List<PicturePart> pictures;
 

@@ -1,14 +1,13 @@
-package com.github.verils.transdoc.core.parser.doc;
+package com.github.verils.transdoc.core.parser;
 
 import com.github.verils.transdoc.core.model.TextPiece;
 
-public class TextPieceImpl implements TextPiece {
+public abstract class AbstractTextPiece implements TextPiece {
 
     private final String text;
-
     private final Style style;
 
-    public TextPieceImpl(String text, Style style) {
+    public AbstractTextPiece(String text, Style style) {
         this.text = text;
         this.style = style;
     }

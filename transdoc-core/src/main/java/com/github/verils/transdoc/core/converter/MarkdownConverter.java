@@ -6,6 +6,8 @@ import java.util.List;
 
 public class MarkdownConverter implements Converter {
 
+    private String pictureDir;
+
     @Override
     public String convert(WordDocument wordDocument) {
         StringBuilder builder = new StringBuilder();
@@ -64,7 +66,7 @@ public class MarkdownConverter implements Converter {
     }
 
     private void appendCodeBlock(StringBuilder builder, TablePart table) {
-        TableCell cell = table.getCell(0, 0);
+        TableCellPart cell = table.getCell(0, 0);
         builder.append("```\n");
         for (Part part : cell.getParts()) {
             if (part instanceof ParagraphPart) {
@@ -81,7 +83,7 @@ public class MarkdownConverter implements Converter {
         for (int i = 0; i < rows; i++) {
             builder.append("|");
             for (int j = 0; j < cols; j++) {
-                TableCell cell = table.getCell(i, j);
+                TableCellPart cell = table.getCell(i, j);
                 StringBuilder cellBuilder = new StringBuilder();
                 appendParts(cellBuilder, cell.getParts());
                 String cellContent = cellBuilder.toString().replaceAll("\n", "<br>");
@@ -119,5 +121,10 @@ public class MarkdownConverter implements Converter {
         if (builder.length() > 0 && builder.charAt(builder.length() - 1) == '*') {
             builder.append(" ");
         }
+    }
+
+    @Override
+    public void setPictureDir(String pictureDir) {
+        this.pictureDir = pictureDir;
     }
 }

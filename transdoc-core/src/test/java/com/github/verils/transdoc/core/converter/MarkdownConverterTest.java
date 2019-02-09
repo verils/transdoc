@@ -28,18 +28,20 @@ public class MarkdownConverterTest {
         Part textParagraph = mockTextParagraph();
         Part codeBlock = mockSingleCellTable();
         Part table = mockTable();
+        Part picture = mockPicture();
 
         when(wordDocument.getParts()).thenReturn(
             Arrays.asList(
                 titleParagraph,
                 textParagraph,
                 codeBlock,
-                table
+                table,
+                picture
             )
         );
 
         String content = converter.convert(wordDocument);
-//        System.out.println(content);
+        System.out.println(content);
         assertNotNull(content);
     }
 
@@ -67,7 +69,7 @@ public class MarkdownConverterTest {
         TablePart table = mock(TablePart.class);
         when(table.isSingleCellTable()).thenReturn(true);
 
-        TableCell cell = mock(TableCell.class);
+        TableCellPart cell = mock(TableCellPart.class);
         List<Part> parts = mockSingleCellParts();
         when(cell.getParts()).thenReturn(parts);
 
@@ -78,19 +80,19 @@ public class MarkdownConverterTest {
     private Part mockTable() {
         TablePart table = mock(TablePart.class);
 
-        TableCell cell00 = mock(TableCell.class);
+        TableCellPart cell00 = mock(TableCellPart.class);
         List<Part> parts00 = mockCellParts();
         when(cell00.getParts()).thenReturn(parts00);
 
-        TableCell cell01 = mock(TableCell.class);
+        TableCellPart cell01 = mock(TableCellPart.class);
         List<Part> parts01 = mockCellParts();
         when(cell01.getParts()).thenReturn(parts01);
 
-        TableCell cell10 = mock(TableCell.class);
+        TableCellPart cell10 = mock(TableCellPart.class);
         List<Part> parts10 = mockCellParts();
         when(cell10.getParts()).thenReturn(parts10);
 
-        TableCell cell11 = mock(TableCell.class);
+        TableCellPart cell11 = mock(TableCellPart.class);
         List<Part> parts11 = mockCellParts();
         when(cell11.getParts()).thenReturn(parts11);
 
@@ -102,6 +104,14 @@ public class MarkdownConverterTest {
         when(table.getCell(1, 0)).thenReturn(cell11);
         when(table.getCell(1, 1)).thenReturn(cell11);
         return table;
+    }
+
+    private Part mockPicture() {
+        PicturePart picture = mock(PicturePart.class);
+        when(picture.getName()).thenReturn("test");
+        when(picture.getExtension()).thenReturn("png");
+        when(picture.getData()).thenReturn(new byte[0]);
+        return picture;
     }
 
     private TextPiece mockBoldTextPiece(String text) {

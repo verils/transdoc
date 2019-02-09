@@ -1,15 +1,15 @@
-package com.github.verils.transdoc.core.parser.doc;
+package com.github.verils.transdoc.core.parser;
 
 import com.github.verils.transdoc.core.model.ParagraphPart;
 import com.github.verils.transdoc.core.model.TextPiece;
+import com.github.verils.transdoc.core.parser.doc.DocTextPiece;
 
 import java.util.Collections;
 import java.util.List;
 
-public class ParagraphPartImpl implements ParagraphPart {
+public abstract class AbstractParagraphPart implements ParagraphPart {
 
     private final List<TextPiece> textPieces;
-
     private final int titleLevel;
 
     /**
@@ -18,8 +18,8 @@ public class ParagraphPartImpl implements ParagraphPart {
      * @param text       文本内容
      * @param titleLevel 标题大纲级别
      */
-    public ParagraphPartImpl(String text, int titleLevel) {
-        TextPiece textPiece = new TextPieceImpl(text, TextPiece.Style.NONE);
+    public AbstractParagraphPart(String text, int titleLevel) {
+        TextPiece textPiece = new DocTextPiece(text, TextPiece.Style.NONE);
         this.textPieces = Collections.singletonList(textPiece);
         this.titleLevel = titleLevel;
     }
@@ -29,7 +29,7 @@ public class ParagraphPartImpl implements ParagraphPart {
      *
      * @param textPieces 文本内容
      */
-    public ParagraphPartImpl(List<TextPiece> textPieces) {
+    public AbstractParagraphPart(List<TextPiece> textPieces) {
         this.textPieces = textPieces;
         this.titleLevel = 0;
     }
@@ -60,6 +60,6 @@ public class ParagraphPartImpl implements ParagraphPart {
 
     @Override
     public String toString() {
-        return "ParagraphPartImpl{\"" + getText() + "\"}";
+        return "DocParagraphPart{\"" + getText() + "\"}";
     }
 }

@@ -1,27 +1,12 @@
-package com.github.verils.transdoc.core.parser.doc;
+package com.github.verils.transdoc.core.parser;
 
 import com.github.verils.transdoc.core.model.PicturePart;
 
-public class PicturePartImpl implements PicturePart {
-
-    private int id;
+public abstract class AbstractPicturePart implements PicturePart {
 
     private String name;
-
     private String extension;
-
-    private int dataOffset;
-
     private byte[] data;
-
-    @Override
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     @Override
     public String getName() {
@@ -39,15 +24,6 @@ public class PicturePartImpl implements PicturePart {
 
     public void setExtension(String extension) {
         this.extension = extension;
-    }
-
-    @Override
-    public int getDataOffset() {
-        return dataOffset;
-    }
-
-    public void setDataOffset(int dataOffset) {
-        this.dataOffset = dataOffset;
     }
 
     @Override

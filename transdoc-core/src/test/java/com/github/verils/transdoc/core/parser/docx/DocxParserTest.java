@@ -1,10 +1,11 @@
-package com.github.verils.transdoc.core.parser;
+package com.github.verils.transdoc.core.parser.docx;
 
 import com.github.verils.transdoc.core.model.Part;
 import com.github.verils.transdoc.core.model.PicturePart;
 import com.github.verils.transdoc.core.model.TablePart;
 import com.github.verils.transdoc.core.model.WordDocument;
-import com.github.verils.transdoc.core.parser.doc.WordDocumentImpl;
+import com.github.verils.transdoc.core.parser.SimpleWordDocument;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -13,16 +14,17 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class DocParserTest {
+public class DocxParserTest {
 
     @Test
+    @Ignore
     public void testParse() throws IOException {
-        InputStream input = DocParserTest.class.getResourceAsStream("/test.doc");
-        WordDocument document = new DocParser(input).parse();
-        assertTrue(document instanceof WordDocumentImpl);
+        InputStream input = DocxParserTest.class.getResourceAsStream("/test.docx");
+        WordDocument document = new DocxParser(input).parse();
+        assertTrue(document instanceof SimpleWordDocument);
 
         List<PicturePart> pictures = document.getPictures();
-        assertTrue(pictures.isEmpty());
+        assertEquals(4, pictures.size());
 
         List<TablePart> tables = document.getTables();
         assertEquals(8, tables.size());

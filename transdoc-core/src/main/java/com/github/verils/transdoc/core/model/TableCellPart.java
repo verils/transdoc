@@ -2,7 +2,7 @@ package com.github.verils.transdoc.core.model;
 
 import java.util.List;
 
-public interface TableCell {
+public interface TableCellPart {
 
     List<Part> getParts();
 }
