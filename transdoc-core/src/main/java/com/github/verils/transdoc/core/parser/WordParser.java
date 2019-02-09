@@ -8,26 +8,25 @@ import com.github.verils.transdoc.core.parser.doc.DocParser;
 import com.github.verils.transdoc.core.parser.docx.DocxParser;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
 public abstract class WordParser implements Closeable {
 
     public static WordDocument parseDocument(InputStream input) {
-        WordParser parser;
         try {
-            parser = new DocParser(input);
-        } catch (IllegalArgumentException e) {
+            WordParser parser;
             try {
+                parser = new DocParser(input);
+            } catch (IllegalArgumentException e) {
                 parser = new DocxParser(input);
-            } catch (Exception ex) {
-                throw new RuntimeException(e);
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            WordDocument wordDocument = parser.parse();
+            parser.close();
+            return wordDocument;
+        } catch (Exception e) {
+            throw new RuntimeException();
         }
-        return parser.parse();
     }
 
     public final WordDocument parse() {

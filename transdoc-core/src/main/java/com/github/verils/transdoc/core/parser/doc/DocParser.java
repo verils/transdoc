@@ -1,6 +1,7 @@
 package com.github.verils.transdoc.core.parser.doc;
 
 import com.github.verils.transdoc.core.model.*;
+import com.github.verils.transdoc.core.model.TextPiece.Style;
 import com.github.verils.transdoc.core.parser.WordParser;
 import com.github.verils.transdoc.core.util.StringUtils;
 import org.apache.poi.hwpf.HWPFDocument;
@@ -164,17 +165,14 @@ public class DocParser extends WordParser {
         List<TextPiece> textPieces = new ArrayList<TextPiece>(numCharacterRuns);
         for (int i = 0; i < numCharacterRuns; i++) {
             CharacterRun characterRun = paragraph.getCharacterRun(i);
-
             String text = characterRun.text();
             text = escapeText(text);
-
-            TextPiece.Style style = TextPiece.Style.NONE;
+            Style style = Style.NONE;
             if (characterRun.isBold()) {
-                style = TextPiece.Style.BOLD;
+                style = Style.BOLD;
             } else if (characterRun.isItalic()) {
-                style = TextPiece.Style.ITALIC;
+                style = Style.ITALIC;
             }
-
             TextPiece textPiece = new DocTextPiece(text, style);
             textPieces.add(textPiece);
         }

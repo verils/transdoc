@@ -27,13 +27,14 @@ public class Transdoc {
         Assert.notNull("Word document source required.", input);
         Assert.notNull("Output destination required.", writer);
 
-        WordDocument article = WordParser.parseDocument(input);
+        WordDocument wordDocument = WordParser.parseDocument(input);
 
-        String content = converter.convert(article);
+        String content = converter.convert(wordDocument);
 
         PrintWriter printWriter = new PrintWriter(writer, true);
         printWriter.print(content);
         printWriter.print("\n");
         printWriter.flush();
+        printWriter.close();
     }
 }

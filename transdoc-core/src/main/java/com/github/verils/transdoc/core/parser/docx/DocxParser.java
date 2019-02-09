@@ -1,6 +1,7 @@
 package com.github.verils.transdoc.core.parser.docx;
 
 import com.github.verils.transdoc.core.model.*;
+import com.github.verils.transdoc.core.model.TextPiece.Style;
 import com.github.verils.transdoc.core.parser.WordParser;
 import com.github.verils.transdoc.core.util.StringUtils;
 import org.apache.poi.xwpf.usermodel.*;
@@ -45,7 +46,7 @@ public class DocxParser extends WordParser {
 
     @Override
     protected List<Part> parseParagraphs(List<PicturePart> pictures, List<TablePart> tables) {
-        // TODO finish
+        // TODO Finish this method.
         return null;
     }
 
@@ -127,14 +128,12 @@ public class DocxParser extends WordParser {
         for (XWPFRun run : runs) {
             String text = run.text();
             text = escapeText(text);
-
-            TextPiece.Style style = TextPiece.Style.NONE;
+            Style style = Style.NONE;
             if (run.isBold()) {
-                style = TextPiece.Style.BOLD;
+                style = Style.BOLD;
             } else if (run.isItalic()) {
-                style = TextPiece.Style.ITALIC;
+                style = Style.ITALIC;
             }
-
             TextPiece textPiece = new DocxTextPiece(text, style);
             textPieces.add(textPiece);
         }

@@ -27,7 +27,7 @@ public class TransdocTest {
 
         transdoc = new Transdoc(converter);
         docResource = TransdocTest.class.getResourceAsStream("/test.doc");
-        docxResource = TransdocTest.class.getResourceAsStream("/test.doc");
+        docxResource = TransdocTest.class.getResourceAsStream("/test.docx");
     }
 
     @Test

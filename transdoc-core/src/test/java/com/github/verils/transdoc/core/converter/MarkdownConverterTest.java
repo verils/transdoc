@@ -42,6 +42,7 @@ public class MarkdownConverterTest {
 
         String content = converter.convert(wordDocument);
         System.out.println(content);
+        // TODO Verify picture content.
         assertNotNull(content);
     }
 

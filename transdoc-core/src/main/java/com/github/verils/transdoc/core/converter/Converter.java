@@ -4,7 +4,7 @@ import com.github.verils.transdoc.core.model.WordDocument;
 
 public interface Converter {
 
-    String convert(WordDocument article);
+    String convert(WordDocument wordDocument);
 
     void setPictureDir(String pictureDir);
 }
