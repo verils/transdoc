@@ -2,6 +2,8 @@ package com.github.verils.transdoc.core.parser;
 
 import com.github.verils.transdoc.core.model.PicturePart;
 
+import java.util.Arrays;
+
 public abstract class AbstractPicturePart implements PicturePart {
 
     private String name;
@@ -33,5 +35,14 @@ public abstract class AbstractPicturePart implements PicturePart {
 
     public void setData(byte[] data) {
         this.data = data;
+    }
+
+    @Override
+    public String toString() {
+        return "AbstractPicturePart{" +
+            "name='" + name + '\'' +
+            ", extension='" + extension + '\'' +
+            ", data=" + Arrays.toString(data) +
+            '}';
     }
 }

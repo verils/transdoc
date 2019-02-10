@@ -6,6 +6,10 @@ import java.util.List;
 
 public class MarkdownConverter implements Converter {
 
+    /**
+     * 图片保存相对目录
+     * TODO Complete function.
+     */
     private String pictureDir;
 
     @Override

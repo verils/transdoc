@@ -60,6 +60,6 @@ public abstract class AbstractParagraphPart implements ParagraphPart {
 
     @Override
     public String toString() {
-        return "DocParagraphPart{\"" + getText() + "\"}";
+        return "AbstractParagraphPart{\"" + getText() + "\"}";
     }
 }
