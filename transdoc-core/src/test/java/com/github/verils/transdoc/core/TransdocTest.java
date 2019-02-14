@@ -57,4 +57,18 @@ public class TransdocTest {
         transdoc.transform(docxResource, writer);
         assertEquals("test\n", writer.toString());
     }
+
+    @Test
+    public void testDocToFile() {
+        StringWriter writer = new StringWriter();
+        transdoc.transform(docResource, writer);
+        assertEquals("test\n", writer.toString());
+    }
+
+    @Test
+    public void testDocxToFile() {
+        StringWriter writer = new StringWriter();
+        transdoc.transform(docxResource, writer);
+        assertEquals("test\n", writer.toString());
+    }
 }

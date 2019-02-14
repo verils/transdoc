@@ -14,4 +14,14 @@ public class StringUtilsTest {
         assertFalse(StringUtils.hasText(""));
         assertFalse(StringUtils.hasText(null));
     }
+
+    @Test
+    public void numberToString() {
+        assertEquals("0", StringUtils.numberToString(0, 0));
+        assertEquals("0", StringUtils.numberToString(0, 1));
+        assertEquals("00", StringUtils.numberToString(0, 2));
+        assertEquals("0000", StringUtils.numberToString(0, 4));
+        assertEquals("0001", StringUtils.numberToString(1, 4));
+        assertEquals("10001", StringUtils.numberToString(10001, 4));
+    }
 }

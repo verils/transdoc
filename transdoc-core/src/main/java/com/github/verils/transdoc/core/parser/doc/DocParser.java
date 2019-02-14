@@ -26,8 +26,9 @@ public class DocParser extends WordParser {
         PicturesTable picturesTable = hwpfDocument.getPicturesTable();
         List<PicturePart> pictureParts = new ArrayList<PicturePart>();
         List<Picture> allPictures = picturesTable.getAllPictures();
+        int index = 0;
         for (Picture picture : allPictures) {
-            pictureParts.add(createPicturePart(picture));
+            pictureParts.add(createPicturePart(index++, picture));
         }
         return pictureParts;
     }
@@ -73,8 +74,9 @@ public class DocParser extends WordParser {
         return parts;
     }
 
-    private PicturePart createPicturePart(Picture picture) {
+    private PicturePart createPicturePart(int index, Picture picture) {
         DocPicturePart docPicturePart = new DocPicturePart();
+        docPicturePart.setIndex(index);
         docPicturePart.setName(picture.suggestFullFileName());
         docPicturePart.setExtension(picture.suggestFileExtension());
         docPicturePart.setData(picture.getContent());

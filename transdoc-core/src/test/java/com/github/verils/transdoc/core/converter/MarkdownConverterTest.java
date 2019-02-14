@@ -14,10 +14,6 @@ import static org.mockito.Mockito.when;
 
 public class MarkdownConverterTest {
 
-    @Before
-    public void setUp() throws Exception {
-    }
-
     @Test
     public void testConvert() {
         Converter converter = new MarkdownConverter();
@@ -42,7 +38,6 @@ public class MarkdownConverterTest {
 
         String content = converter.convert(wordDocument);
         System.out.println(content);
-        // TODO Verify picture content.
         assertNotNull(content);
     }
 
@@ -109,7 +104,8 @@ public class MarkdownConverterTest {
 
     private Part mockPicture() {
         PicturePart picture = mock(PicturePart.class);
-        when(picture.getName()).thenReturn("test");
+        when(picture.getIndex()).thenReturn(0);
+        when(picture.getName()).thenReturn("test.png");
         when(picture.getExtension()).thenReturn("png");
         when(picture.getData()).thenReturn(new byte[0]);
         return picture;

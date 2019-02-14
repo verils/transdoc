@@ -1,16 +1,15 @@
 package com.github.verils.transdoc.core.converter;
 
 import com.github.verils.transdoc.core.model.*;
+import com.github.verils.transdoc.core.util.FileUtils;
+import com.github.verils.transdoc.core.util.StringUtils;
 
+import java.io.File;
 import java.util.List;
 
 public class MarkdownConverter implements Converter {
 
-    /**
-     * 图片保存相对目录
-     * TODO Complete function.
-     */
-    private String pictureDir;
+    private String pictureDir = "pictures";
 
     @Override
     public String convert(WordDocument wordDocument) {
@@ -19,14 +18,35 @@ public class MarkdownConverter implements Converter {
         return builder.toString();
     }
 
+    @Override
+    public void extractPictures(WordDocument wordDocument, File file) {
+        File parentDir = file.getParentFile();
+        for (PicturePart picture : wordDocument.getPictures()) {
+            File picFile = new File(parentDir, getPath(picture));
+            picFile.mkdirs();
+            FileUtils.write(picFile, picture.getData());
+        }
+    }
+
+    @Override
+    public String getPictureDir() {
+        return pictureDir.endsWith("/") ? pictureDir : pictureDir + "/";
+    }
+
+    @Override
+    public void setPictureDir(String pictureDir) {
+        this.pictureDir = pictureDir;
+    }
+
     private void appendParts(StringBuilder builder, List<Part> parts) {
         for (Part part : parts) {
             if (part instanceof ParagraphPart) {
                 appendParagraph(builder, (ParagraphPart) part);
             } else if (part instanceof TablePart) {
                 appendTable(builder, (TablePart) part);
+            } else if (part instanceof PicturePart) {
+                appendPicture(builder, (PicturePart) part);
             }
-            builder.append("\n\n");
         }
     }
 
@@ -36,6 +56,7 @@ public class MarkdownConverter implements Converter {
         } else {
             appendText(builder, paragraph);
         }
+        builder.append("\n\n");
     }
 
     private void appendTable(StringBuilder builder, TablePart table) {
@@ -44,7 +65,12 @@ public class MarkdownConverter implements Converter {
         } else {
             appendTableGrid(builder, table);
         }
+        builder.append("\n\n");
+    }
 
+    private void appendPicture(StringBuilder builder, PicturePart picture) {
+        builder.append("[](").append(getPath(picture)).append(")");
+        builder.append("\n\n");
     }
 
     private void appendTitle(StringBuilder builder, ParagraphPart paragraph) {
@@ -127,8 +153,7 @@ public class MarkdownConverter implements Converter {
         }
     }
 
-    @Override
-    public void setPictureDir(String pictureDir) {
-        this.pictureDir = pictureDir;
+    private String getPath(PicturePart picture) {
+        return getPictureDir() + StringUtils.numberToString(picture.getIndex(), 4) + "." + picture.getExtension();
     }
 }
