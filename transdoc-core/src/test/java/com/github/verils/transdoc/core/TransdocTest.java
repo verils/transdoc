@@ -2,14 +2,13 @@ package com.github.verils.transdoc.core;
 
 import com.github.verils.transdoc.core.converter.Converter;
 import com.github.verils.transdoc.core.model.WordDocument;
+import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.StringWriter;
+import java.io.*;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -59,16 +58,24 @@ public class TransdocTest {
     }
 
     @Test
-    public void testDocToFile() {
-        StringWriter writer = new StringWriter();
-        transdoc.transform(docResource, writer);
-        assertEquals("test\n", writer.toString());
+    public void testDocToFile() throws IOException {
+        File dest = new File("testdoc");
+        transdoc.transform(docResource, dest);
+        assertTrue(dest.exists());
+        assertTrue(new File(dest, "testdoc.md").exists());
+
+        FileUtils.deleteDirectory(dest);
+        assertFalse(dest.exists());
     }
 
     @Test
-    public void testDocxToFile() {
-        StringWriter writer = new StringWriter();
-        transdoc.transform(docxResource, writer);
-        assertEquals("test\n", writer.toString());
+    public void testDocxToFile() throws IOException {
+        File dest = new File("testdocx");
+        transdoc.transform(docResource, dest);
+        assertTrue(dest.exists());
+        assertTrue(new File(dest, "testdocx.md").exists());
+
+        FileUtils.deleteDirectory(dest);
+        assertFalse(dest.exists());
     }
 }

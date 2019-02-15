@@ -1,10 +1,11 @@
 package com.github.verils.transdoc.core.converter;
 
 import com.github.verils.transdoc.core.model.*;
-import com.github.verils.transdoc.core.util.FileUtils;
 import com.github.verils.transdoc.core.util.StringUtils;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public class MarkdownConverter implements Converter {
@@ -19,12 +20,11 @@ public class MarkdownConverter implements Converter {
     }
 
     @Override
-    public void extractPictures(WordDocument wordDocument, File file) {
-        File parentDir = file.getParentFile();
+    public void extractPictures(WordDocument wordDocument, File dest) throws IOException {
         for (PicturePart picture : wordDocument.getPictures()) {
-            File picFile = new File(parentDir, getPath(picture));
+            File picFile = new File(dest, getPath(picture));
             picFile.mkdirs();
-            FileUtils.write(picFile, picture.getData());
+            FileUtils.writeByteArrayToFile(picFile, picture.getData());
         }
     }
 

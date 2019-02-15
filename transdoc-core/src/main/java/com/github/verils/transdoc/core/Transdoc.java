@@ -42,7 +42,6 @@ public class Transdoc {
         WordDocument wordDocument = WordParser.parseDocument(input);
 
         String content = converter.convert(wordDocument);
-
         writeContent(writer, content);
     }
 
@@ -50,23 +49,28 @@ public class Transdoc {
      * 输出转换结果到文件，并且将图片内容存储为文件
      *
      * @param input Word文档输入流
-     * @param file  转换后的文档输出文件
-     * @throws IOException 文件不存在且无法创建时抛出该异常
+     * @param dest  转换后的文档输出目录
      */
-    public void transform(InputStream input, File file) throws IOException {
+    public void transform(InputStream input, File dest) {
         Assert.notNull("Word document source required.", input);
-        Assert.notNull("Output destination required.", file);
+        Assert.notNull("Output destination required.", dest);
 
-        file.mkdirs();
+        dest.mkdirs();
 
-        FileWriter writer = new FileWriter(file);
+        try {
+            File file = new File(dest, dest.getName() + ".md");
+            FileWriter writer = new FileWriter(file);
 
-        WordDocument wordDocument = WordParser.parseDocument(input);
+            WordDocument wordDocument = WordParser.parseDocument(input);
 
-        String content = converter.convert(wordDocument);
-        converter.extractPictures(wordDocument, file);
+            String content = converter.convert(wordDocument);
+            writeContent(writer, content);
 
-        writeContent(writer, content);
+            converter.extractPictures(wordDocument, dest);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     private void writeContent(Writer writer, String content) {
